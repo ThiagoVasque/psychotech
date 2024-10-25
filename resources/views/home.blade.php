@@ -9,6 +9,8 @@
     <style>
         body {
             background-color: #f8f9fa;
+            margin: 0; 
+            padding: 0; 
         }
         .brand-color {
             color: #6f42c1;
@@ -26,9 +28,13 @@
         }
         footer {
             margin-top: 50px;
-            padding: 20px 0;
+            padding: 10px 0; 
             background-color: #6f42c1;
             color: #fff;
+            width: 100%; 
+            position: relative;
+            left: 0; 
+            right: 0;
         }
     </style>
 </head>
@@ -86,51 +92,8 @@
                 </div>
             </div>
         </div>
+    </div> 
 
-        <h2 class="mt-5 brand-color">Perguntas Frequentes</h2>
-        <div class="accordion mt-4" id="faqAccordion">
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="faqOne">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        O que é telemedicina?
-                    </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="faqOne" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        A telemedicina é a prestação de serviços médicos à distância, utilizando tecnologias de informação e comunicação.
-                    </div>
-                </div>
-            </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="faqTwo">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        Quais são os benefícios da telemedicina?
-                    </button>
-                </h2>
-                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="faqTwo" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        Os principais benefícios incluem acesso rápido a médicos, conforto, redução de custos e tempo, além de um ambiente seguro para atendimento.
-                    </div>
-                </div>
-            </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="faqThree">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                        Como funciona o agendamento?
-                    </button>
-                </h2>
-                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="faqThree" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        Você pode agendar uma consulta diretamente em nosso site, escolhendo o médico e o horário que mais lhe convém.
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <footer class="text-center">
-            <p>&copy; {{ date('Y') }} PsychoTech. Todos os direitos reservados.</p>
-        </footer>
-    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>

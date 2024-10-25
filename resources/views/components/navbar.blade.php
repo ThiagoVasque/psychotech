@@ -8,13 +8,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="">Doutores</a>
+                    <a class="nav-link" href="">Doutores</a> <!-- Link para Doutores -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="">Planos</a>
+                    <a class="nav-link" href="">Planos</a> <!-- Link para Planos -->
                 </li>
             </ul>
-            <ul class="navbar-nav ms-auto"> <!-- Adiciona ms-auto aqui -->
+            <ul class="navbar-nav ms-auto"> 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('login') }}">Login</a>
                 </li>

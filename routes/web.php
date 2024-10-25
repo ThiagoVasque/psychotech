@@ -6,14 +6,20 @@ use App\Http\Controllers\DoutorController;
 use App\Http\Controllers\ZoomController;
 use App\Http\Controllers\RegisterController;
 
-
-
 Route::get('/', function () {
     return view('home');
 })->name('home');
 
-//Rotas de Login e Cadastro
-Route::post('/register', [RegisterController::class, 'register'])->name('register');
+// Rotas de Login e Cadastro
+Route::get('/login', function () {
+    return view('auth.login'); // A view de login
+})->name('login');
+
+// Rota de Registro
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+
+
+Route::post('/register', [RegisterController::class, 'register']);
 
 // Rotas para o paciente
 Route::get('/paciente/sessoes', [PacienteController::class, 'sessoes'])->name('paciente.sessoes');

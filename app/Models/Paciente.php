@@ -24,5 +24,5 @@ class Paciente extends Model
         'senha',
     ];
 
-    protected $hidden = ['senha'];
+    protected $hidden = ['senha']; // Senha não será exibida ao serializar o modelo
 }

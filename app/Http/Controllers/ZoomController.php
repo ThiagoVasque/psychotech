@@ -18,7 +18,7 @@ class ZoomController extends Controller
 {
     $meetingData = [
         'topic' => $request->input('topic', 'Sessão de Telemedicina'),
-        'type' => 2, // Reunião agendada
+        'type' => 2, 
         'start_time' => $request->input('start_time'),
         'duration' => $request->input('duration', 30),
         'settings' => [

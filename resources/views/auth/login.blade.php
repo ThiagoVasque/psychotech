@@ -13,15 +13,15 @@
             color: #6f42c1;
         }
         .container {
-            max-width: 400px; /* Define a largura máxima do formulário */
-            margin-top: 100px; /* Espaço superior para centralização */
+            max-width: 400px; 
+            margin-top: 100px;
         }
     </style>
 </head>
 <body>
     <x-navbar />
     <div class="container text-center">
-        <h1 class="brand-color">Psychotech</h1> <!-- Logo do site -->
+        <h1 class="brand-color">Psychotech</h1> 
         <form method="POST" action="{{ route('login') }}">
             @csrf
             <div class="mb-3">
@@ -35,10 +35,10 @@
             <button type="submit" class="btn btn-primary">Entrar</button>
         </form>
         <div class="mt-3">
-            <a href="{{ route('password.request') }}">Esqueci minha senha?</a> <!-- Link para recuperação de senha -->
+            <a href="{{ route('password.request') }}">Esqueci minha senha?</a> 
         </div>
         <div class="mt-2">
-            <p>Não tem uma conta? <a href="{{ route('register') }}">Cadastre-se</a></p> <!-- Link para cadastro -->
+            <p>Não tem uma conta? <a href="{{ route('register') }}">Cadastre-se</a></p>
         </div>
     </div>
 </body>

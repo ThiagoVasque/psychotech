@@ -12,7 +12,7 @@ class CreateDiariosTable extends Migration
             $table->id();
             $table->foreignId('paciente_id')->constrained('pacientes')->onDelete('cascade');
             $table->text('entrada');
-            $table->timestamps(); // Isso vai adicionar created_at e updated_at
+            $table->timestamps(); 
         });
     }
 
