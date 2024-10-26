@@ -2,42 +2,50 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash; 
+use Illuminate\Support\Facades\Hash;
 use App\Models\Doutor;
-use App\Models\Paciente; 
+use App\Models\Paciente;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        // Validação dos campos CPF e senha
         $request->validate([
             'cpf' => 'required|string',
             'password' => 'required|string',
         ]);
 
-        \Log::info('Tentativa de login:', ['cpf' => $request->cpf]);
+        $cpf = preg_replace('/[^\d]/', '', $request->cpf);
 
-        // Autenticação do doutor
-        $doutor = Doutor::where('cpf', $request->cpf)->first();
-        if ($doutor && Hash::check($request->password, $doutor->senha)) {
-            Auth::login($doutor);
-            \Log::info('Login do doutor bem-sucedido: ', ['cpf' => $request->cpf]);
-            return redirect('/doutor');
+        $doutor = Doutor::where('cpf', $cpf)->first();
+        if ($doutor) {
+            if (Hash::check($request->password, $doutor->senha)) {
+                Auth::guard('doutor')->login($doutor);
+                session(['user_role' => 'doutor']);
+                return redirect()->route('doutor.home')->with('success', 'Login realizado com sucesso!');
+            }
         }
 
-        // Autenticação do paciente
-        $paciente = Paciente::where('cpf', $request->cpf)->first();
-        if ($paciente && Hash::check($request->password, $paciente->senha)) {
-            Auth::login($paciente);
-            \Log::info('Login do paciente bem-sucedido: ', ['cpf' => $request->cpf]);
-            return redirect('/paciente');
+        $paciente = Paciente::where('cpf', $cpf)->first();
+        if ($paciente) {
+            if (Hash::check($request->password, $paciente->senha)) {
+                Auth::guard('paciente')->login($paciente);
+                session(['user_role' => 'paciente']);
+                return redirect()->route('paciente.home')->with('success', 'Login realizado com sucesso!');
+            }
         }
 
-        // Se falhar, redireciona de volta com erro
-        \Log::warning('Login falhou: ', ['cpf' => $request->cpf]);
-        return back()->withErrors(['login' => 'As credenciais fornecidas estão incorretas.']);
+        return back()->withErrors(['login' => 'As credenciais fornecidas estão incorretas.'])->withInput();
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/')->with('success', 'Logout realizado com sucesso.');
     }
 }

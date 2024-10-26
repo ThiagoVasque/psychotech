@@ -2,7 +2,7 @@
 
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Features;
-use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\Auth\RegisterController;
 
 Fortify::createUsersUsing(RegisterController::class);
 

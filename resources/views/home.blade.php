@@ -1,4 +1,3 @@
-<!-- resources/views/home.blade.php -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -26,16 +25,6 @@
             border: none;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        footer {
-            margin-top: 50px;
-            padding: 10px 0; 
-            background-color: #6f42c1;
-            color: #fff;
-            width: 100%; 
-            position: relative;
-            left: 0; 
-            right: 0;
-        }
     </style>
 </head>
 <body>
@@ -50,7 +39,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Login</h5>
                         <p class="card-text">Já possui uma conta? Faça login para acessar seus dados e agendar consultas.</p>
-                        <a href="{{ route('login') }}" class="btn btn-custom">Entrar</a>
+                        <a href="{{ route('login') }}" class="btn btn-custom">Entrar</a> <!-- Corrigido para 'login' -->
                     </div>
                 </div>
             </div>
@@ -93,7 +82,6 @@
             </div>
         </div>
     </div> 
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Doutor extends Model
+class Doutor extends Authenticatable
 {
     use HasFactory;
 
-    protected $table = 'doutores'; // Nome da tabela
+    protected $table = 'doutores';
+
     protected $fillable = [
         'crm',
         'nome',
@@ -20,10 +21,12 @@ class Doutor extends Model
         'logradouro',
         'numero',
         'complemento',
+        'cidade',
+        'estado',
         'telefone',
         'email',
-        'senha',
+        'senha', // Certifique-se de que este campo está presente
     ];
 
-    protected $hidden = ['senha'];
+    protected $hidden = ['senha']; // Certifique-se de que este campo está presente
 }

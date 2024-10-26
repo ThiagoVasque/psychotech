@@ -6,6 +6,12 @@ use Illuminate\Http\Request;
 
 class DoutorController extends Controller
 {
+    public function home()
+    {
+        // Lógica para exibir a página inicial do doutor
+        return view('doutor.home');
+    }
+
     public function index()
     {
         // Lógica para exibir a lista de pacientes

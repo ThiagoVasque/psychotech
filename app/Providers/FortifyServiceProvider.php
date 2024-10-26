@@ -9,9 +9,12 @@ use App\Actions\Fortify\UpdateUserProfileInformation;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
+use App\Models\Doutor;
+use App\Models\Paciente;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -20,7 +23,7 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        
+        // Adicione aqui os registros necessários, se houver
     }
 
     /**
@@ -33,6 +36,16 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
+        // Autenticação usando CPF e senha
+        Fortify::authenticateUsing(function (Request $request) {
+            $user = Doutor::where('cpf', $request->cpf)->first() ?? Paciente::where('cpf', $request->cpf)->first();
+            
+            if ($user && Hash::check($request->password, $user->senha)) {
+                return $user;
+            }
+            return null;
+        });
+
         // Definindo as views para login e registro
         Fortify::loginView(function () {
             return view('auth.login');
@@ -44,7 +57,7 @@ class FortifyServiceProvider extends ServiceProvider
 
         // Limitação de taxa para login
         RateLimiter::for('login', function (Request $request) {
-            $throttleKey = Str::lower($request->input(Fortify::username())).'|'.$request->ip();
+            $throttleKey = Str::lower($request->input(Fortify::username())) . '|' . $request->ip();
             return Limit::perMinute(5)->by($throttleKey);
         });
 

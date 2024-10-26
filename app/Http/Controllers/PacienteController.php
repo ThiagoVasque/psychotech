@@ -6,6 +6,12 @@ use Illuminate\Http\Request;
 
 class PacienteController extends Controller
 {
+    public function home()
+    {
+        // Lógica para exibir a página inicial do paciente
+        return view('paciente.home');
+    }
+
     public function sessoes()
     {
         // Lógica para exibir sessões agendadas
