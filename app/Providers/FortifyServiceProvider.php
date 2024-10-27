@@ -36,11 +36,11 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
-        // Autenticação usando CPF e senha
+        // Autenticação usando CPF e password
         Fortify::authenticateUsing(function (Request $request) {
             $user = Doutor::where('cpf', $request->cpf)->first() ?? Paciente::where('cpf', $request->cpf)->first();
             
-            if ($user && Hash::check($request->password, $user->senha)) {
+            if ($user && Hash::check($request->password, $user->password)) { // Alterado 'senha' para 'password'
                 return $user;
             }
             return null;

@@ -25,8 +25,8 @@ class Doutor extends Authenticatable
         'estado',
         'telefone',
         'email',
-        'senha', // Certifique-se de que este campo está presente
+        'password', // Alterado de 'senha' para 'password'
     ];
 
-    protected $hidden = ['senha']; // Certifique-se de que este campo está presente
+    protected $hidden = ['password']; // Alterado de 'senha' para 'password'
 }

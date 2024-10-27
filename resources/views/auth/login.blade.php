@@ -19,7 +19,7 @@
             margin-top: 100px;
         }
         .btn-primary:hover {
-            background-color: #5c2a91; /* Cor ao passar o mouse */
+            background-color: #5c2a91;
             border-color: #5c2a91;
         }
     </style>
@@ -56,7 +56,7 @@
                 @enderror
             </div>
             <div class="mb-3">
-                <label for="password" class="form-label">Senha</label>
+                <label for="password" class="form-label">Password</label> <!-- Mudança de 'Senha' para 'Password' -->
                 <input type="password" name="password" id="password" class="form-control" required>
                 @error('password')
                     <div class="text-danger">{{ $message }}</div>
@@ -72,8 +72,12 @@
             <p>Não tem uma conta? <a href="{{ route('register') }}">Cadastre-se</a></p>
         </div>
     </div>
+    
     <script>
-        // Adicione aqui qualquer script adicional, se necessário
+        $(document).ready(function() {
+            // Máscara para o CPF
+            $('#cpf').mask('000.000.000-00', {reverse: true});
+        });
     </script>
 </body>
 </html>

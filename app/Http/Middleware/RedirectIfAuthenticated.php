@@ -8,17 +8,21 @@ use Illuminate\Support\Facades\Auth;
 
 class RedirectIfAuthenticated
 {
-    public function handle(Request $request, Closure $next, $guard = null)
+    public function handle(Request $request, Closure $next)
     {
-        if (Auth::guard($guard)->check()) {
-            if (Auth::guard('doutor')->check()) {
+        // Verifica se o usuário já está autenticado
+        if (Auth::check()) {
+            // Verifica se é um Doutor
+            if (Auth::user() instanceof \App\Models\Doutor) {
                 return redirect()->route('doutor.home');
-            } elseif (Auth::guard('paciente')->check()) {
+            }
+
+            // Verifica se é um Paciente
+            if (Auth::user() instanceof \App\Models\Paciente) {
                 return redirect()->route('paciente.home');
             }
-            return redirect('/home');
         }
+
         return $next($request);
     }
-
 }

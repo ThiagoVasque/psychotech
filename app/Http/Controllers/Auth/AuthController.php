@@ -20,18 +20,20 @@ class AuthController extends Controller
 
         $cpf = preg_replace('/[^\d]/', '', $request->cpf);
 
+        // Tenta autenticar como Doutor
         $doutor = Doutor::where('cpf', $cpf)->first();
         if ($doutor) {
-            if (Hash::check($request->password, $doutor->senha)) {
+            if (Hash::check($request->password, $doutor->password)) { // Alterado de 'senha' para 'password'
                 Auth::guard('doutor')->login($doutor);
                 session(['user_role' => 'doutor']);
                 return redirect()->route('doutor.home')->with('success', 'Login realizado com sucesso!');
             }
         }
 
+        // Tenta autenticar como Paciente
         $paciente = Paciente::where('cpf', $cpf)->first();
         if ($paciente) {
-            if (Hash::check($request->password, $paciente->senha)) {
+            if (Hash::check($request->password, $paciente->password)) { // Alterado de 'senha' para 'password'
                 Auth::guard('paciente')->login($paciente);
                 session(['user_role' => 'paciente']);
                 return redirect()->route('paciente.home')->with('success', 'Login realizado com sucesso!');

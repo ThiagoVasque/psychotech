@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller; // Linha adicionada
+use App\Http\Controllers\Controller; 
 use Illuminate\Http\Request;
 use App\Models\Paciente;
 use App\Models\Doutor;
@@ -59,7 +59,7 @@ class RegisterController extends Controller
             ]);
 
             $data['cpf'] = $cpf;
-            $data['senha'] = Hash::make($request->password);
+            $data['password'] = Hash::make($request->password); // Mudei 'senha' para 'password'
 
             if ($request->role === 'doutor') {
                 $data['crm'] = $request->crm;

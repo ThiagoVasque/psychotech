@@ -3,36 +3,49 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DoutorController extends Controller
 {
+    // Método para exibir a página inicial do doutor
     public function home()
     {
-        // Lógica para exibir a página inicial do doutor
         return view('doutor.home');
     }
 
+    // Método para exibir a lista de pacientes
     public function index()
     {
-        // Lógica para exibir a lista de pacientes
-        return view('doutor.pacientes');
+        // Aqui você pode obter a lista de pacientes associados ao doutor autenticado
+        $doutor = Auth::user(); // Obtém o doutor autenticado
+        // Lógica para recuperar a lista de pacientes, se necessário
+        return view('doutor.pacientes', compact('doutor'));
     }
 
+    // Método para gerenciar sessões
     public function sessoes()
     {
         // Lógica para gerenciar sessões
-        return view('doutor.sessoes');
+        $doutor = Auth::user(); // Obtém o doutor autenticado
+        // Você pode passar dados de sessões para a view se necessário
+        return view('doutor.sessoes', compact('doutor'));
     }
 
+    // Método para gerar relatórios
     public function relatorios()
     {
         // Lógica para gerar relatórios
-        return view('doutor.relatorios');
+        $doutor = Auth::user(); // Obtém o doutor autenticado
+        // Você pode passar dados para a view se necessário
+        return view('doutor.relatorios', compact('doutor'));
     }
 
+    // Método para criar e gerenciar videoconferências
     public function videoconferencia()
     {
         // Lógica para criar e gerenciar videoconferências
-        return view('doutor.videoconferencia');
+        $doutor = Auth::user(); // Obtém o doutor autenticado
+        // Você pode passar dados de videoconferência para a view se necessário
+        return view('doutor.videoconferencia', compact('doutor'));
     }
 }
