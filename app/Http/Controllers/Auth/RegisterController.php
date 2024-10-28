@@ -14,7 +14,7 @@ class RegisterController extends Controller
 {
     public function showRegistrationForm()
     {
-        return view('auth.register');
+        return view('auth.register'); // Certifique-se de que esta view existe
     }
 
     public function register(Request $request)
@@ -52,20 +52,24 @@ class RegisterController extends Controller
         $cpf = preg_replace('/[^\d]/', '', $request->cpf);
 
         try {
+            // Coletando os dados para serem salvos
             $data = $request->only([
                 'nome', 'data_nascimento', 'cep', 'bairro',
                 'logradouro', 'numero', 'complemento', 'cidade',
                 'estado', 'telefone', 'email'
             ]);
 
+            // Adicionando CPF e senha ao array de dados
             $data['cpf'] = $cpf;
-            $data['password'] = Hash::make($request->password); // Mudei 'senha' para 'password'
+            $data['password'] = Hash::make($request->password);
+            $data['role'] = $request->role; // Adicionando o campo role
 
+            // Criando o usuário na tabela correta
             if ($request->role === 'doutor') {
-                $data['crm'] = $request->crm;
-                Doutor::create($data);
+                $data['crm'] = $request->crm; // Adiciona o CRM apenas para doutores
+                Doutor::create($data); // Salva na tabela doutores
             } else {
-                Paciente::create($data);
+                Paciente::create($data); // Salva na tabela pacientes
             }
 
             return redirect()->route('home')->with('success', 'Registro realizado com sucesso! Faça login.');

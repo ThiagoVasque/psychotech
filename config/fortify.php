@@ -4,14 +4,12 @@ use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Features;
 use App\Http\Controllers\Auth\RegisterController;
 
-Fortify::createUsersUsing(RegisterController::class);
-
 return [
     'guard' => 'web',
 
     'passwords' => 'users',
 
-    'username' => 'email', // Define 'email' como o campo de login
+    'username' => 'cpf', // Define 'email' como o campo de login
 
     'email' => 'email',
 

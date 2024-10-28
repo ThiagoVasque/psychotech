@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
@@ -15,6 +14,7 @@ use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
 use App\Models\Doutor;
 use App\Models\Paciente;
+use App\Http\Controllers\Auth\RegisterController; // Adicione essa linha
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -31,7 +31,9 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Fortify::createUsersUsing(CreateNewUser::class);
+        // Use o controlador de registro que você criou
+        Fortify::createUsersUsing(RegisterController::class);
+
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
@@ -40,13 +42,12 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::authenticateUsing(function (Request $request) {
             $user = Doutor::where('cpf', $request->cpf)->first() ?? Paciente::where('cpf', $request->cpf)->first();
             
-            if ($user && Hash::check($request->password, $user->password)) { // Alterado 'senha' para 'password'
+            if ($user && Hash::check($request->password, $user->password)) {
                 return $user;
             }
             return null;
         });
 
-        // Definindo as views para login e registro
         Fortify::loginView(function () {
             return view('auth.login');
         });
