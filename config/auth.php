@@ -9,8 +9,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => env('AUTH_GUARD', 'web'),
-        'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
+        'guard' => 'paciente', // Mude para 'paciente' ou 'doutor' conforme necessário
+        'passwords' => 'pacientes', // Use o broker correto
     ],
 
     /*
@@ -20,19 +20,16 @@ return [
     */
 
     'guards' => [
-        'web' => [
+        'paciente' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'pacientes',
         ],
         'doutor' => [
             'driver' => 'session',
             'provider' => 'doutores',
         ],
-        'paciente' => [
-            'driver' => 'session',
-            'provider' => 'pacientes',
-        ],
     ],
+
     /*
     |--------------------------------------------------------------------------
     | User Providers
@@ -40,17 +37,13 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'pacientes' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => App\Models\Paciente::class,
         ],
         'doutores' => [
             'driver' => 'eloquent',
             'model' => App\Models\Doutor::class,
-        ],
-        'pacientes' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Paciente::class,
         ],
     ],
 
@@ -61,20 +54,14 @@ return [
     */
 
     'passwords' => [
-        'users' => [
-            'provider' => 'users',
+        'pacientes' => [
+            'provider' => 'pacientes',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
             'expire' => 60,
             'throttle' => 60,
         ],
         'doutores' => [
             'provider' => 'doutores',
-            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
-            'expire' => 60,
-            'throttle' => 60,
-        ],
-        'pacientes' => [
-            'provider' => 'pacientes',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
             'expire' => 60,
             'throttle' => 60,

@@ -11,8 +11,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        // Adicionando middleware personalizado
+        $middleware->web(append: [
+            \App\Http\Middleware\StoreCpfInSession::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
-    })->create();
+        // Configurações de exceções aqui, se necessário
+    })
+    ->create();
