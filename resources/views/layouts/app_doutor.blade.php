@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Dashboard Doutor</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <div class="d-flex">
-        <!-- Navbar Lateral -->
+        <!-- Navbar Lateral Doutor -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light flex-column" style="width: 250px; height: 100vh; position: fixed; overflow-y: auto; box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);">
             <!-- Exibindo o Nome do Usuário Logado -->
             <div class="text-center mb-4 mt-3">
@@ -23,30 +24,30 @@
             </div>
 
             <ul class="navbar-nav flex-column">
-                <!-- Opções do Paciente -->
+                <!-- Opções do Doutor -->
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('paciente.home') }}">
+                    <a class="nav-link" href="{{ route('doutor.home') }}">
                         <i class="fas fa-home"></i> Início
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('paciente.sessoes') }}">
+                    <a class="nav-link" href="{{ route('doutor.pacientes') }}">
+                        <i class="fas fa-user"></i> Gerenciar Pacientes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('doutor.sessoes') }}">
                         <i class="fas fa-calendar-check"></i> Gerenciar Sessões
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('paciente.pagamentos') }}">
-                        <i class="fas fa-wallet"></i> Pagamentos
+                    <a class="nav-link" href="{{ route('doutor.relatorios') }}">
+                        <i class="fas fa-file-alt"></i> Ver Relatórios
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('paciente.anotacoes') }}">
-                        <i class="fas fa-sticky-note"></i> Anotações
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('paciente.historico') }}">
-                        <i class="fas fa-history"></i> Histórico
+                    <a class="nav-link" href="{{ route('doutor.videoconferencia') }}">
+                        <i class="fas fa-video"></i> Videoconferência
                     </a>
                 </li>
             </ul>
