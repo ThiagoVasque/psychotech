@@ -8,6 +8,7 @@ use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\DoutorController;
 use App\Http\Controllers\ZoomController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\DiarioController;
 
 // Ignora as rotas padrão do Fortify
 Fortify::ignoreRoutes();
@@ -43,9 +44,16 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('paciente')->group(function () {
         Route::get('/sessoes', [PacienteController::class, 'sessoes'])->name('paciente.sessoes');
-        Route::get('/anotacoes', [PacienteController::class, 'anotacoes'])->name('paciente.anotacoes');
         Route::get('/pagamentos', [PacienteController::class, 'pagamentos'])->name('paciente.pagamentos');
-        Route::get('/historico', [PacienteController::class, 'historico'])->name('paciente.historico');
+        Route::get('/historico', [PacienteController::class, 'historico'])->name('paciente.historico'); 
+        Route::get('/diario', [DiarioController::class, 'index'])->name('paciente.diario');
+    Route::post('/diario', [DiarioController::class, 'store'])->name('paciente.storeDiario');
+    
+    Route::post('/diario/{id}', [DiarioController::class, 'update'])->name('paciente.updateDiario'); // Atualiza uma anotação
+    
+    Route::post('/diario/{id}/delete', [DiarioController::class, 'destroy'])->name('paciente.deleteDiario');
+
+        
     });
 });
 

@@ -1,23 +1,110 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diário Virtual</title>
-</head>
-<body>
-    <h1>Diário Virtual</h1>
+@extends('layouts.app_paciente')
 
-    <form action="{{ route('diarios.store') }}" method="POST">
-        @csrf
-        <label for="entrada">Entrada:</label><br>
-        <textarea id="entrada" name="entrada" rows="4" placeholder="Escreva sua entrada aqui..." required></textarea><br><br>
-
-        <button type="submit">Salvar Entrada</button>
-    </form>
+@section('content')
+<div class="container">
+    <h1>Minhas Anotações</h1>
 
     @if (session('success'))
-        <p style="color: green;">{{ session('success') }}</p>
+        <div class="alert alert-success">{{ session('success') }}</div>
     @endif
-</body>
-</html>
+
+    <!-- Botão para abrir o modal de adicionar nova anotação -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addAnotacaoModal">
+        Nova Anotação
+    </button>
+
+    <h2>Lista de Anotações</h2>
+    @foreach($anotacoes as $anotacao)
+        <div class="anotacao">
+            <h3>{{ $anotacao->titulo }}</h3>
+            <p>{{ $anotacao->texto }}</p>
+            <p><strong>Criado em:</strong> {{ $anotacao->created_at->format('d/m/Y H:i:s') }}</p>
+
+            <!-- Botão para abrir o modal de edição -->
+            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editAnotacaoModal{{ $anotacao->id }}">
+                Editar
+            </button>
+
+            <!-- Modal de edição -->
+            <div class="modal fade" id="editAnotacaoModal{{ $anotacao->id }}" tabindex="-1" role="dialog" aria-labelledby="editAnotacaoModalLabel{{ $anotacao->id }}" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editAnotacaoModalLabel{{ $anotacao->id }}">Editar Anotação</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="{{ route('paciente.updateDiario', $anotacao->id) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="_method" value="POST">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="titulo_{{ $anotacao->id }}">Título:</label>
+                                    <input type="text" class="form-control" id="titulo_{{ $anotacao->id }}" name="titulo" value="{{ $anotacao->titulo }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="texto_{{ $anotacao->id }}">Texto:</label>
+                                    <textarea class="form-control" id="texto_{{ $anotacao->id }}" name="texto" rows="2" required>{{ $anotacao->texto }}</textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                                <button type="submit" class="btn btn-primary">Atualizar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botão de exclusão -->
+            <form action="{{ route('paciente.deleteDiario', $anotacao->id) }}" method="POST" style="display:inline;">
+                @csrf
+                <input type="hidden" name="_method" value="POST">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta anotação?')">Excluir</button>
+            </form>
+        </div>
+        <hr>
+    @endforeach
+</div>
+
+<!-- Modal para adicionar nova anotação -->
+<div class="modal fade" id="addAnotacaoModal" tabindex="-1" role="dialog" aria-labelledby="addAnotacaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAnotacaoModalLabel">Nova Anotação</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('paciente.storeDiario') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="titulo">Título:</label>
+                        <input type="text" class="form-control" id="titulo" name="titulo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="texto">Texto:</label>
+                        <textarea class="form-control" id="texto" name="texto" rows="2" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@endsection
+
+@section('scripts')
+<script>
+    $(document).ready(function(){
+        // Código JavaScript adicional, se necessário
+    });
+</script>
+@endsection

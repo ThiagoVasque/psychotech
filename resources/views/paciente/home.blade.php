@@ -31,7 +31,7 @@
                 <div class="card-body">
                     <h2 class="card-title">Anotações</h2>
                     <p class="card-text">Mantenha suas anotações e lembretes em dia.</p>
-                    <a href="{{ route('paciente.anotacoes') }}" class="btn btn-primary">Ver Anotações</a>
+                    <a href="{{ route('paciente.diario') }}" class="btn btn-primary">Ver Anotações</a>
                 </div>
             </div>
         </div>

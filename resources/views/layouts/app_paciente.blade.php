@@ -41,7 +41,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('paciente.anotacoes') }}">
+                    <a class="nav-link" href="{{ route('paciente.diario') }}">
                         <i class="fas fa-sticky-note"></i> Anotações
                     </a>
                 </li>
