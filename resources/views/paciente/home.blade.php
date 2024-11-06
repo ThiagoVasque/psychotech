@@ -1,7 +1,8 @@
 @extends('layouts.app_paciente')
 
 @section('content')
-<div class="container">
+<div >
+    
     <h1 class="text-center mt-4">Bem-vindo à Home do Paciente</h1>
     <p class="text-center">Aqui você pode gerenciar suas sessões, pagamentos e anotações.</p>
 
@@ -37,4 +38,5 @@
         </div>
     </div>
 </div>
+    
 @endsection

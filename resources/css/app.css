@@ -1,6 +1,6 @@
 body {
     font-family: 'Arial', sans-serif; 
-    background-color: #f8f9fa; 
+    background-color: #0080ff; 
     color: #333; 
 }
 
@@ -126,11 +126,16 @@ h2 {
 }
 
 .feature h2 {
-    color: #007bff;
+    color: #fff;
 }
 
 .feature a {
     display: inline-block;
     margin-top: 10px;
     text-align: center;
+}
+.carousel_slide{
+    justify-items: center;
+    margin-left: 100%;
+    background-color: #0056b3;
 }
