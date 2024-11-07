@@ -52,8 +52,8 @@
                 </li>
             </ul>
             
-            <div class="mt-auto text-center mb-4">
-                <!-- Botão de Logout -->
+            <div class="text-center mb-4 mt-3">
+            <!-- Botão de Logout -->
                 <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="btn btn-danger btn-sm">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
@@ -61,6 +61,7 @@
                     @csrf
                 </form>
             </div>
+
         </nav>
 
         <!-- Conteúdo Principal -->
@@ -77,15 +78,15 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
-<footer class="text-white text-center py-4" style="background-color: #821AD1;">
+<footer class="text-white text-center py-2 fixed-bottom" style="background-color: #821AD1;">
   <div class="container">
-    <p>Conecte-se com a gente:</p>
+    <p class="mb-0">Conecte-se com a gente:</p>
     <a href="#" class="text-white mx-2"><i class="fab fa-facebook-f"></i></a>
     <a href="#" class="text-white mx-2"><i class="fab fa-twitter"></i></a>
     <a href="#" class="text-white mx-2"><i class="fab fa-instagram"></i></a>
   </div>
-  <div class="text-center mt-3">
-    <p>© 2024 Minha Empresa. Todos os direitos reservados.</p>
+  <div class="text-center mt-2">
+    <p class="mb-0">© 2024 PsychoTech. Todos os direitos reservados.</p>
   </div>
 </footer>
 
