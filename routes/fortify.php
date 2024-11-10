@@ -9,9 +9,9 @@ Fortify::createUsersUsing(RegisterController::class);
 
 // Configurando as views
 Fortify::registerView(function () {
-    return view('auth.register'); // A view de registro personalizada
+    return view('auth.register');
 });
 
 Fortify::loginView(function () {
-    return view('auth.login'); // A view de login personalizada
+    return view('auth.login'); 
 });

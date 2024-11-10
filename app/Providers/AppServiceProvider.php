@@ -4,6 +4,10 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use App\Rules\CpfReceitaValidator;
+use App\Services\CpfValidatorService;
+use Illuminate\Support\Facades\Validator;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +24,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        
+    
     }
 }

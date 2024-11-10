@@ -15,5 +15,4 @@ class Session extends Model
 
     protected $keyType = 'string'; // O tipo da chave é string para suportar CPF
 
-    // Adicione outras funcionalidades se necessário
 }

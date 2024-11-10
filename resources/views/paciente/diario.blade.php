@@ -110,7 +110,6 @@
 @section('scripts')
 <script>
     $(document).ready(function(){
-        // Código JavaScript adicional, se necessário
     });
 </script>
 @endsection

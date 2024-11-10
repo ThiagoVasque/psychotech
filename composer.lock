@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "98d400f0f8e94d8f2282aac65f2aef57",
+    "content-hash": "4ec24098d5a585d2f09fd506660e945c",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -2687,6 +2687,43 @@
                 "source": "https://github.com/antonioribeiro/google2fa/tree/v8.0.3"
             },
             "time": "2024-09-05T11:56:40+00:00"
+        },
+        {
+            "name": "proner/cpf",
+            "version": "v0.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PronerInformatica/cpf.git",
+                "reference": "06091824c154a1007a137c354fa58219691035a5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PronerInformatica/cpf/zipball/06091824c154a1007a137c354fa58219691035a5",
+                "reference": "06091824c154a1007a137c354fa58219691035a5",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Proner\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Diogo Bemfica",
+                    "email": "diogo.fragabemfica@gmail.com"
+                }
+            ],
+            "description": "Classe para trabalhar com CPF",
+            "support": {
+                "issues": "https://github.com/PronerInformatica/cpf/issues",
+                "source": "https://github.com/PronerInformatica/cpf/tree/v0.3.2"
+            },
+            "time": "2016-09-21T13:37:08+00:00"
         },
         {
             "name": "psr/clock",

@@ -10,6 +10,5 @@ abstract class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
-    // Aqui você pode adicionar métodos ou propriedades que deseja que
-    // todos os controladores herdem.
+
 }
