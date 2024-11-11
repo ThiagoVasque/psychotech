@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DoutorServico extends Model
 {
-    protected $table = 'doutores_servicos'; // Nome correto da tabela
+    protected $table = 'doutores_servicos'; 
     protected $fillable = ['titulo', 'descricao', 'especialidade', 'preco', 'doutor_cpf'];
 
     public function doutor()
