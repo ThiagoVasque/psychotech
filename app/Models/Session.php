@@ -11,8 +11,8 @@ class Session extends Model
     
     protected $fillable = ['id', 'payload', 'last_activity'];
 
-    public $incrementing = false; // Para não usar auto-incremento
+    public $incrementing = false; 
 
-    protected $keyType = 'string'; // O tipo da chave é string para suportar CPF
+    protected $keyType = 'string';
 
 }

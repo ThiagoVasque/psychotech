@@ -31,13 +31,13 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('paciente.sessoes') }}">
-                        <i class="fas fa-calendar-check"></i> Gerenciar Sessões
+                    <a class="nav-link" href="{{ route('paciente.doutores') }}">
+                        <i class="fas fa-user-md"></i> Doutores
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('paciente.pagamentos') }}">
-                        <i class="fas fa-wallet"></i> Pagamentos
+                    <a class="nav-link" href="{{ route('paciente.sessoes') }}">
+                        <i class="fas fa-calendar-check"></i> Minhas consultas
                     </a>
                 </li>
                 <li class="nav-item">

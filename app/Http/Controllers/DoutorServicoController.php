@@ -15,10 +15,18 @@ class DoutorServicoController extends Controller
     // Lista os serviços do doutor autenticado
     public function index()
     {
-        // Certifique-se de que a variável 'servicos' está sendo passada corretamente
+        // Obtém os serviços do doutor autenticado
         $servicos = DoutorServico::where('doutor_cpf', auth()->user()->cpf)->get();
-        return view('doutor.sessoes', compact('servicos'));
+    
+        $agenda = [];
+    
+        foreach ($servicos as $servico) {
+            $agenda[] = json_decode($servico->agenda_horarios);
+        }
+    
+        return view('doutor.sessoes', compact('servicos', 'agenda'));
     }
+    
 
     // Exibe o formulário para criar um novo serviço
     public function create()
@@ -34,14 +42,17 @@ class DoutorServicoController extends Controller
             'descricao' => 'required|string',
             'especialidade' => 'required|string',
             'preco' => 'required|numeric',
+            'horarios' => 'required|array',
         ]);
 
-        DoutorServico::create([
+        // Criando o serviço
+        $servico = DoutorServico::create([
             'titulo' => $request->titulo,
             'descricao' => $request->descricao,
             'especialidade' => $request->especialidade,
             'preco' => $request->preco,
             'doutor_cpf' => auth()->user()->cpf,
+            'agenda_horarios' => json_encode($request->horarios),
         ]);
 
         return redirect()->route('doutor.sessoes')->with('success', 'Serviço criado com sucesso!');
@@ -69,9 +80,17 @@ class DoutorServicoController extends Controller
             'descricao' => 'required|string',
             'especialidade' => 'required|string',
             'preco' => 'required|numeric',
+            'horarios' => 'required|array', 
         ]);
 
-        $servico->update($request->only('titulo', 'descricao', 'especialidade', 'preco'));
+        // Atualizando o serviço com os novos dados e horários
+        $servico->update([
+            'titulo' => $request->titulo,
+            'descricao' => $request->descricao,
+            'especialidade' => $request->especialidade,
+            'preco' => $request->preco,
+            'agenda_horarios' => json_encode($request->horarios), 
+        ]);
 
         return redirect()->route('doutor.sessoes')->with('success', 'Serviço atualizado com sucesso!');
     }

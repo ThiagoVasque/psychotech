@@ -9,8 +9,8 @@
         <div class="col-md-4">
             <div class="card card-custom text-center mb-4 shadow-sm">
                 <div class="card-body">
-                    <h2 class="card-title">Gerenciar Sessões</h2>
-                    <p class="card-text">Visualize e agende suas próximas sessões com os profissionais de saúde.</p>
+                    <h2 class="card-title">Minhas consultas</h2>
+                    <p class="card-text">Veja suas consultas</p>
                     <a href="{{ route('paciente.sessoes') }}" class="btn btn-primary btn-custom">Ver Sessões</a>
                 </div>
             </div>
@@ -19,9 +19,9 @@
         <div class="col-md-4">
             <div class="card card-custom text-center mb-4 shadow-sm">
                 <div class="card-body">
-                    <h2 class="card-title">Pagamentos</h2>
-                    <p class="card-text">Consulte seus pagamentos e faturas.</p>
-                    <a href="{{ route('paciente.pagamentos') }}" class="btn btn-primary btn-custom">Ver Pagamentos</a>
+                    <h2 class="card-title">Doutores</h2>
+                    <p class="card-text">Veja o catalogo de nossos serviços</p>
+                    <a href="{{ route('paciente.doutores') }}" class="btn btn-primary btn-custom">Ver consultas</a>
                 </div>
             </div>
         </div>
@@ -30,7 +30,7 @@
             <div class="card card-custom text-center mb-4 shadow-sm">
                 <div class="card-body">
                     <h2 class="card-title">Anotações</h2>
-                    <p class="card-text">Mantenha suas anotações e lembretes em dia.</p>
+                    <p class="card-text">Verifique suas anotações</p>
                     <a href="{{ route('paciente.diario') }}" class="btn btn-primary btn-custom">Ver Anotações</a>
                 </div>
             </div>

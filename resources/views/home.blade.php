@@ -63,11 +63,6 @@
 </div>
 
     <p>Conecte-se com profissionais de saúde de forma rápida e segura, onde quer que você esteja.</p>
-
-        
-
-       
-        
         <h2 class="mt-5 brand-color">Por que escolher a PsychoTech?</h2>
         <div class="row mt-4 mb-5" style="margin">
             <div class="col-md-4">

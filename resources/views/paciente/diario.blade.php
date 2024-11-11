@@ -31,8 +31,8 @@
 
                     <!-- Botão de exclusão -->
                     <form action="{{ route('paciente.deleteDiario', $anotacao->id) }}" method="POST" style="display:inline;">
-                        @csrf
-                        <input type="hidden" name="_method" value="POST">
+                    @csrf
+                    @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta anotação?')">Excluir</button>
                     </form>
                 </div>
@@ -51,7 +51,7 @@
                     </div>
                     <form action="{{ route('paciente.updateDiario', $anotacao->id) }}" method="POST">
                         @csrf
-                        <input type="hidden" name="_method" value="POST">
+                        @method('PUT')
                         <div class="modal-body">
                             <div class="form-group">
                                 <label for="titulo_{{ $anotacao->id }}">Título:</label>

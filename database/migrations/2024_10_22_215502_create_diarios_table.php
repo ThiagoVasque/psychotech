@@ -9,7 +9,7 @@ class CreateDiariosTable extends Migration
     public function up()
     {
         Schema::create('diarios', function (Blueprint $table) {
-            $table->id(); // Cria o campo 'id' como chave primária
+            $table->id(); 
             $table->string('paciente_cpf'); 
             $table->foreign('paciente_cpf')->references('cpf')->on('pacientes')->onDelete('cascade');
             $table->string('titulo'); 

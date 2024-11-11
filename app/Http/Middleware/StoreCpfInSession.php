@@ -12,7 +12,7 @@ class StoreCpfInSession
     {
         if (Auth::check()) {
             $user = Auth::user();
-            session(['cpf' => $user->cpf]); // Armazena o CPF do usuário na sessão
+            session(['cpf' => $user->cpf]); 
         }
 
         return $next($request);

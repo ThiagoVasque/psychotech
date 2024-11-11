@@ -10,9 +10,9 @@ class Doutor extends Authenticatable
     use HasFactory;
 
     protected $table = 'doutores';
-    protected $primaryKey = 'cpf'; // Define CPF como chave primária
-    public $incrementing = false; // Define que a chave primária não é auto-incrementável
-    protected $keyType = 'string'; // Define o tipo da chave como string, caso o CPF tenha pontuação
+    protected $primaryKey = 'cpf'; 
+    public $incrementing = false; 
+    protected $keyType = 'string';
 
     protected $fillable = [
         'crm',

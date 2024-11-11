@@ -20,6 +20,13 @@ class PacienteController extends Controller
         return view('paciente.sessoes', compact('paciente'));
     }
 
+    //Método para exibir os serviços dos doutores
+    public function doutores()
+    {
+        $paciente = Auth::user();
+        return view('paciente.doutores', compact('paciente'));
+    }
+
     // Método para exibir e criar anotações
     public function anotacoes()
     {

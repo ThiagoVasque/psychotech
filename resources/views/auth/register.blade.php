@@ -176,6 +176,7 @@
     </div>
 </div>
 
+
 <script>
     // Verifica se há erros e define em qual passo o formulário deve começar
     const hasErrors = {{ $errors->any() ? 'true' : 'false' }};
