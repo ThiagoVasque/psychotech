@@ -11,12 +11,15 @@
         body {
             background-color: #f8f9fa;
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
         .brand-color {
             color: #6f42c1;
         }
         .card-custom {
             border-radius: 15px;
+            margin-top: 30px;
         }
         .card-header {
             background-color: #6f42c1;
@@ -33,7 +36,7 @@
             font-size: 16px;
         }
         .container {
-            padding: 30px;
+            padding: 30px 15px;
         }
         .step {
             display: none;
@@ -47,7 +50,35 @@
         }
         .form-navigation button {
             font-size: 16px;
-            padding: 10px 30px;
+            padding: 10px 20px;
+        }
+
+        /* Ajustes de Responsividade */
+        @media (max-width: 768px) {
+            .card-header {
+                padding: 15px;
+            }
+            .form-group label {
+                font-size: 14px;
+            }
+            .form-control {
+                height: 40px;
+                font-size: 14px;
+            }
+            .btn-block {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .card-header h3 {
+                font-size: 20px;
+            }
+            .form-navigation button {
+                font-size: 14px;
+                padding: 8px 15px;
+            }
         }
     </style>
 </head>
@@ -57,7 +88,7 @@
 
 <!-- Form -->
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-    <div class="col-md-8 col-lg-6">
+    <div class="col-12 col-md-10 col-lg-8">
         <div class="card shadow-lg border-0 rounded-lg mt-5 card-custom">
             <div class="card-header text-white text-center">
                 <h3 class="mb-0">Registrar</h3>
@@ -176,94 +207,68 @@
     </div>
 </div>
 
-
 <script>
-    // Verifica se há erros e define em qual passo o formulário deve começar
-    const hasErrors = {{ $errors->any() ? 'true' : 'false' }};
-    let currentStep = hasErrors ? 3 : 1; // Começa no passo 3 se houver erros, senão começa no passo 1
-    const totalSteps = 3;
-
-    // Função que mostra o passo atual do formulário
-    const showStep = (step) => {
-        // Esconde todos os passos e mostra apenas o atual
-        for (let i = 1; i <= totalSteps; i++) {
-            document.getElementById('step' + i).classList.remove('active');
-        }
-        document.getElementById('step' + step).classList.add('active');
-
-        // Controla a visibilidade dos botões "Anterior", "Próximo" e "Registrar"
-        document.getElementById('prevBtn').style.display = step === 1 ? 'none' : 'inline';
-        document.getElementById('nextBtn').style.display = step === totalSteps ? 'none' : 'inline';
-        document.getElementById('submitBtn').style.display = step === totalSteps ? 'inline' : 'none';
-    };
-
-    // Avança para o próximo passo
-    document.getElementById('nextBtn').onclick = () => {
-        if (currentStep < totalSteps) {
-            currentStep++;
-            showStep(currentStep);
-        }
-    };
-
-    // Volta para o passo anterior
-    document.getElementById('prevBtn').onclick = () => {
-        if (currentStep > 1) {
-            currentStep--;
-            showStep(currentStep);
-        }
-    };
-
-    // Função de máscaras e comportamentos ao carregar a página
     $(document).ready(function () {
-        // Máscaras para CPF, Data de Nascimento, CEP e Telefone
-        $('#cpf').mask('000.000.000-00');
-        $('#data_nascimento').mask('00/00/0000');
-        $('#cep').mask('00000-000');
-        $('#telefone').mask('(00) 00000-0000');
+        $("#cpf").mask("000.000.000-00");
+        $("#data_nascimento").mask("00/00/0000");
+        $("#telefone").mask("(00) 00000-0000");
+        $("#cep").mask("00000-000");
 
-        // Quando o formulário for submetido, converta a data para o formato correto
-        $('#registrationForm').submit(function () {
-            var dataNascimento = $('#data_nascimento').val();
-            if (dataNascimento) {
-                // Converte de DD/MM/YYYY para YYYY-MM-DD
-                var partes = dataNascimento.split('/');
-                var dataFormatada = partes[2] + '-' + partes[1] + '-' + partes[0];
-                $('#data_nascimento').val(dataFormatada);
-            }
-        });
-
-        // Exibe o campo CRM quando o perfil selecionado é "Doutor"
-        $('#role').change(function() {
-            if ($(this).val() === 'doutor') {
+        // Exibir campo de CRM apenas para o perfil "Doutor"
+        $('#role').change(function () {
+            if ($(this).val() == 'doutor') {
                 $('#crmField').show();
             } else {
                 $('#crmField').hide();
             }
-        }).trigger('change'); // Exibe/esconde o campo CRM conforme o perfil já selecionado ao carregar a página
+        });
 
-        // Preenche o endereço automaticamente ao informar um CEP válido
-        $('#cep').on('blur', function() {
-            const cep = $(this).val().replace(/\D/g, ''); // Remove qualquer caracter não numérico
-            if (cep.length === 8) { // Verifica se o CEP possui 8 dígitos
-                $.getJSON(`https://viacep.com.br/ws/${cep}/json/`, function(data) {
-                    if (data.erro) {
-                        alert('CEP não encontrado'); // Mostra alerta se o CEP não for encontrado
-                    } else {
-                        // Preenche os campos de endereço com os dados
+        // Função para buscar o endereço via CEP
+        $('#cep').on('blur', function () {
+            var cep = $(this).val().replace(/\D/g, '');
+            if (cep.length === 8) {
+                $.getJSON(`https://viacep.com.br/ws/${cep}/json/`, function (data) {
+                    if (!data.erro) {
                         $('#logradouro').val(data.logradouro);
                         $('#bairro').val(data.bairro);
                         $('#cidade').val(data.localidade);
                         $('#estado').val(data.uf);
+                    } else {
+                        alert("CEP não encontrado.");
                     }
+                }).fail(function () {
+                    alert("Erro ao buscar o CEP.");
                 });
             }
         });
+
+        // Controles de navegação
+        let currentStep = 1;
+        const totalSteps = $(".step").length;
+
+        $("#nextBtn").click(function () {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep();
+            }
+        });
+
+        $("#prevBtn").click(function () {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep();
+            }
+        });
+
+        function showStep() {
+            $(".step").removeClass("active").hide();
+            $("#step" + currentStep).addClass("active").show();
+            $("#prevBtn").toggle(currentStep > 1);
+            $("#nextBtn").toggle(currentStep < totalSteps);
+            $("#submitBtn").toggle(currentStep === totalSteps);
+        }
     });
-
-    // Mostra o passo inicial do formulário
-    showStep(currentStep);
 </script>
-
 
 </body>
 </html>
