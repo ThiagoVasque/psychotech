@@ -13,7 +13,6 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Exemplo de Dados -->
             <tr>
                 <td>...</td>
                 <td>...</td>

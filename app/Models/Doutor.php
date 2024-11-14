@@ -10,9 +10,15 @@ class Doutor extends Authenticatable
     use HasFactory;
 
     protected $table = 'doutores';
-    protected $primaryKey = 'cpf'; 
-    public $incrementing = false; 
+    protected $primaryKey = 'cpf';
+    public $incrementing = false;
     protected $keyType = 'string';
+
+
+    public function servicos()
+    {
+        return $this->hasMany(DoutorServico::class, 'doutor_cpf', 'cpf');
+    }
 
     protected $fillable = [
         'crm',

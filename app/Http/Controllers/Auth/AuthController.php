@@ -34,7 +34,7 @@ class AuthController extends Controller
         if ($paciente && Hash::check($request->password, $paciente->password)) {
             Auth::guard('paciente')->login($paciente);
             Log::info("Paciente autenticado com sucesso: " . $paciente->cpf);
-            
+
             // Redireciona para a rota correta
             return redirect()->route('paciente.home')->with('success', 'Login realizado com sucesso!');
         }
@@ -44,7 +44,7 @@ class AuthController extends Controller
         if ($doutor && Hash::check($request->password, $doutor->password)) {
             Auth::guard('doutor')->login($doutor);
             Log::info("Doutor autenticado com sucesso: " . $doutor->cpf);
-            
+
             // Redireciona para a rota correta
             return redirect()->route('doutor.home')->with('success', 'Login realizado com sucesso!');
         }

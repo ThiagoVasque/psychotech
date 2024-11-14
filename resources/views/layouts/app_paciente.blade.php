@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,10 +9,12 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
+
 <body>
     <div class="d-flex">
-        <!-- Navbar Lateral Paciente -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light flex-column" style="width: 250px; height: 100vh; position: fixed; overflow-y: auto; box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);">
+        <!-- Sidebar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light flex-column"
+            style="width: 250px; height: 100vh; position: fixed; overflow-y: auto; box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);">
             <!-- Exibindo o Nome do Usuário Logado -->
             <div class="text-center mb-4 mt-3">
                 <h5>Olá</h5>
@@ -31,12 +34,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('paciente.doutores') }}">
+                    <a class="nav-link" href="{{ route('paciente.servicos') }}">
                         <i class="fas fa-user-md"></i> Doutores
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('paciente.sessoes') }}">
+                    <a class="nav-link" href="{{ route('paciente.consultas') }}">
                         <i class="fas fa-calendar-check"></i> Minhas consultas
                     </a>
                 </li>
@@ -51,10 +54,12 @@
                     </a>
                 </li>
             </ul>
-            
+
             <div class="text-center mb-4 mt-3">
-            <!-- Botão de Logout -->
-                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="btn btn-danger btn-sm">
+                <!-- Logout -->
+                <a href="{{ route('logout') }}"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                    class="btn btn-danger btn-sm">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -64,7 +69,7 @@
 
         </nav>
 
-        <!-- Conteúdo Principal -->
+        <!-- Main -->
         <div class="container" style="margin-left: 250px; padding-top: 20px;">
             <div class="content">
                 @yield('content')
@@ -78,16 +83,18 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
-<footer class="text-white text-center py-2 fixed-bottom" style="background-color: #821AD1;">
-  <div class="container">
-    <p class="mb-0">Conecte-se com a gente:</p>
-    <a href="https://www.instagram.com/guico_felipe_/?igsh=MXJkZGdoNjl0ankycg%3D%3D" class="text-white mx-2"><i class="fab fa-instagram"></i></a>
-    <a href="https://www.instagram.com/thiagonvasque/?igsh=MTBjaW5naXpjMW95MQ%3D%3D" class="text-white mx-2"><i class="fab fa-instagram"></i></a>
-    <a href="https://github.com/ThiagoVasque/psychotech" class="text-white mx-2"><i class="fab fa-github"></i></a> <!-- Ícone do GitHub -->
-  </div>
-  <div class="text-center mt-2">
-    <p class="mb-0">© 2024 PsychoTech. Todos os direitos reservados.</p>
-  </div>
+<footer class="text-white text-center fixed-bottom" style="background-color: #821AD1;">
+    <div class="container">
+        <p class="mb-0">Conecte-se com a gente:</p>
+        <a href="https://www.instagram.com/guico_felipe_/?igsh=MXJkZGdoNjl0ankycg%3D%3D" class="text-white mx-2"><i
+                class="fab fa-instagram"></i></a>
+        <a href="https://www.instagram.com/thiagonvasque/?igsh=MTBjaW5naXpjMW95MQ%3D%3D" class="text-white mx-2"><i
+                class="fab fa-instagram"></i></a>
+        <a href="https://github.com/ThiagoVasque/psychotech" class="text-white mx-2"><i class="fab fa-github"></i></a>
+    </div>
+    <div class="text-center mt-2">
+        <p class="mb-0">© 2024 PsychoTech. Todos os direitos reservados.</p>
+    </div>
 </footer>
 
 

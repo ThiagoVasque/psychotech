@@ -8,10 +8,10 @@ use Illuminate\Session\DatabaseSessionHandler;
 class Session extends Model
 {
     protected $table = 'sessions';
-    
+
     protected $fillable = ['id', 'payload', 'last_activity'];
 
-    public $incrementing = false; 
+    public $incrementing = false;
 
     protected $keyType = 'string';
 

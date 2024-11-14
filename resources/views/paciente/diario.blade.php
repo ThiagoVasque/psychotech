@@ -25,22 +25,26 @@
 
                 <div class="d-flex justify-content-between">
                     <!-- Botão para abrir o modal de edição -->
-                    <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editAnotacaoModal{{ $anotacao->id }}">
+                    <button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
+                        data-target="#editAnotacaoModal{{ $anotacao->id }}">
                         Editar
                     </button>
 
                     <!-- Botão de exclusão -->
-                    <form action="{{ route('paciente.deleteDiario', $anotacao->id) }}" method="POST" style="display:inline;">
-                    @csrf
-                    @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta anotação?')">Excluir</button>
+                    <form action="{{ route('paciente.deleteDiario', $anotacao->id) }}" method="POST"
+                        style="display:inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-sm"
+                            onclick="return confirm('Tem certeza que deseja excluir esta anotação?')">Excluir</button>
                     </form>
                 </div>
             </div>
         </div>
 
         <!-- Modal de edição -->
-        <div class="modal fade" id="editAnotacaoModal{{ $anotacao->id }}" tabindex="-1" role="dialog" aria-labelledby="editAnotacaoModalLabel{{ $anotacao->id }}" aria-hidden="true">
+        <div class="modal fade" id="editAnotacaoModal{{ $anotacao->id }}" tabindex="-1" role="dialog"
+            aria-labelledby="editAnotacaoModalLabel{{ $anotacao->id }}" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -55,11 +59,13 @@
                         <div class="modal-body">
                             <div class="form-group">
                                 <label for="titulo_{{ $anotacao->id }}">Título:</label>
-                                <input type="text" class="form-control" id="titulo_{{ $anotacao->id }}" name="titulo" value="{{ $anotacao->titulo }}" required>
+                                <input type="text" class="form-control" id="titulo_{{ $anotacao->id }}" name="titulo"
+                                    value="{{ $anotacao->titulo }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="texto_{{ $anotacao->id }}">Texto:</label>
-                                <textarea class="form-control" id="texto_{{ $anotacao->id }}" name="texto" rows="2" required>{{ $anotacao->texto }}</textarea>
+                                <textarea class="form-control" id="texto_{{ $anotacao->id }}" name="texto" rows="2"
+                                    required>{{ $anotacao->texto }}</textarea>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -75,7 +81,8 @@
 </div>
 
 <!-- Modal para adicionar nova anotação -->
-<div class="modal fade" id="addAnotacaoModal" tabindex="-1" role="dialog" aria-labelledby="addAnotacaoModalLabel" aria-hidden="true">
+<div class="modal fade" id="addAnotacaoModal" tabindex="-1" role="dialog" aria-labelledby="addAnotacaoModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -109,7 +116,7 @@
 
 @section('scripts')
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
     });
 </script>
 @endsection

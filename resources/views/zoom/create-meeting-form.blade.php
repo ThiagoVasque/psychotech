@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Criar Reunião Zoom</title>
 </head>
+
 <body>
     <h1>Criar Reunião no Zoom</h1>
 
@@ -14,7 +16,8 @@
         <p><strong>Tópico:</strong> {{ $meeting['topic'] }}</p>
         <p><strong>Data e Hora:</strong> {{ \Carbon\Carbon::parse($meeting['start_time'])->format('d/m/Y H:i') }}</p>
         <p><strong>Duração:</strong> {{ $meeting['duration'] }} minutos</p>
-        <p><strong>Link para a Reunião:</strong> <a href="{{ $meeting['join_url'] }}" target="_blank">{{ $meeting['join_url'] }}</a></p>
+        <p><strong>Link para a Reunião:</strong> <a href="{{ $meeting['join_url'] }}"
+                target="_blank">{{ $meeting['join_url'] }}</a></p>
     @elseif (isset($error))
         <p style="color: red;">{{ $error }}</p>
     @endif
@@ -33,4 +36,5 @@
         <button type="submit">Criar Reunião</button>
     </form>
 </body>
+
 </html>

@@ -10,8 +10,8 @@ class Paciente extends Authenticatable
     use HasFactory;
 
     protected $table = 'pacientes';
-    protected $primaryKey = 'cpf'; 
-    public $incrementing = false; 
+    protected $primaryKey = 'cpf';
+    public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = [

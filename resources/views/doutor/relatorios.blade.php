@@ -6,7 +6,6 @@
 
     <!-- Formulário de Filtro -->
     <form action="" method="GET" class="mb-4">
-        <!-- Campo do Nome do Paciente ocupando a linha inteira -->
         <div class="form-group">
             <label for="nome">Nome do Paciente</label>
             <input type="text" class="form-control" id="nome" name="nome" placeholder="Digite o nome do paciente">

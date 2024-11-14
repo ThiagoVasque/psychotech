@@ -9,7 +9,7 @@ class CreatePacientesTable extends Migration
     public function up()
     {
         Schema::create('pacientes', function (Blueprint $table) {
-            $table->string('cpf')->primary(); 
+            $table->string('cpf')->primary();
             $table->string('nome');
             $table->date('data_nascimento');
             $table->string('cep');
@@ -17,11 +17,11 @@ class CreatePacientesTable extends Migration
             $table->string('logradouro');
             $table->string('numero');
             $table->string('complemento')->nullable();
-            $table->string('cidade'); 
-            $table->string('estado'); 
+            $table->string('cidade');
+            $table->string('estado');
             $table->string('telefone');
             $table->string('email')->unique();
-            $table->string('password'); 
+            $table->string('password');
             $table->timestamps();
         });
     }

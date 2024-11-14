@@ -41,7 +41,7 @@ class FortifyServiceProvider extends ServiceProvider
         // Autenticação usando CPF e password
         Fortify::authenticateUsing(function (Request $request) {
             $user = Doutor::where('cpf', $request->cpf)->first() ?? Paciente::where('cpf', $request->cpf)->first();
-            
+
             if ($user && Hash::check($request->password, $user->password)) {
                 return $user;
             }
@@ -53,7 +53,7 @@ class FortifyServiceProvider extends ServiceProvider
         });
 
         Fortify::registerView(function () {
-            return view('auth.register'); 
+            return view('auth.register');
         });
 
         // Limitação de taxa para login

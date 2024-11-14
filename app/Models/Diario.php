@@ -9,7 +9,6 @@ class Diario extends Model
 {
     use HasFactory;
 
- 
     protected $table = 'diarios';
 
     protected $fillable = ['paciente_cpf', 'titulo', 'texto'];

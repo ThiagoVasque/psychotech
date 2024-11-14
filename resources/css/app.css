@@ -1,48 +1,54 @@
 body {
-    font-family: 'Arial', sans-serif; 
-    background-color: #0080ff; 
-    color: #333; 
+    font-family: 'Arial', sans-serif;
+    background-color: #0080ff;
+    color: #333;
 }
 
 .container {
-    max-width: 1200px; /* Aumentei a largura máxima para mais espaço */
-    margin: auto; 
-    padding: 20px; 
+    max-width: 1200px;
+    /* Aumentei a largura máxima para mais espaço */
+    margin: auto;
+    padding: 20px;
 }
 
 h1 {
-    text-align: center; /* Centraliza o título principal */
+    text-align: center;
+    /* Centraliza o título principal */
     color: #007bff;
     margin-bottom: 10px;
 }
 
 h2 {
-    color: #007bff; 
-    margin-bottom: 20px; 
+    color: #007bff;
+    margin-bottom: 20px;
 }
 
 .btn-primary {
-    background-color: #007bff; 
-    border: none; 
-    padding: 10px 15px; /* Adicionei padding para aumentar o tamanho do botão */
-    border-radius: 0.25rem; /* Arredonda os cantos do botão */
-    transition: background-color 0.3s, transform 0.2s; /* Transições suaves */
+    background-color: #007bff;
+    border: none;
+    padding: 10px 15px;
+    /* Adicionei padding para aumentar o tamanho do botão */
+    border-radius: 0.25rem;
+    /* Arredonda os cantos do botão */
+    transition: background-color 0.3s, transform 0.2s;
+    /* Transições suaves */
 }
 
 .btn-primary:hover {
-    background-color: #0056b3; 
-    transform: translateY(-2px); /* Leve elevação ao passar o mouse */
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    /* Leve elevação ao passar o mouse */
 }
 
 /* Alertas */
 .alert {
-    margin-top: 20px; 
+    margin-top: 20px;
 }
 
 .form-control {
-    border: 1px solid #ced4da; 
-    border-radius: 0.25rem; 
-    padding: 10px; 
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    padding: 10px;
 }
 
 /* Navbar */
@@ -52,8 +58,9 @@ h2 {
     padding: 15px;
     position: fixed;
     height: 100%;
-    margin-bottom: 20px; 
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Sombra para a navbar */
+    margin-bottom: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    /* Sombra para a navbar */
 }
 
 .profile {
@@ -76,15 +83,15 @@ h2 {
 .navbar ul li a {
     text-decoration: none;
     color: #333;
-    transition: color 0.3s; 
+    transition: color 0.3s;
 }
 
 .navbar ul li a:hover {
-    color: #007bff; 
+    color: #007bff;
 }
 
 .content {
-    margin-left: 260px; 
+    margin-left: 260px;
     padding: 20px;
     flex: 1;
 }
@@ -96,7 +103,7 @@ h2 {
         height: auto;
         position: relative;
     }
-    
+
     .content {
         margin-left: 0;
         padding: 10px;
@@ -105,24 +112,26 @@ h2 {
 
 .features {
     display: flex;
-    flex-wrap: wrap; /* Permite que os cards se ajustem */
-    justify-content: space-around; /* Distribui espaço entre os cards */
-    margin-top: 40px; /* Aumentei a margem superior */
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 40px;
 }
 
 .feature {
     background-color: #fff;
     border: 1px solid #ced4da;
-    border-radius: 0.5rem; /* Cantos mais arredondados */
+    border-radius: 0.5rem;
     padding: 20px;
-    margin: 10px; /* Espaçamento entre os cards */
-    width: calc(33% - 20px); /* Para permitir o espaço entre os cards */
+    margin: 10px;
+    width: calc(33% - 20px);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s; /* Transição ao passar o mouse */
+    transition: transform 0.3s;
+    
 }
 
 .feature:hover {
-    transform: translateY(-5px); /* Elevação ao passar o mouse */
+    transform: translateY(-5px);
+    /* Elevação ao passar o mouse */
 }
 
 .feature h2 {
@@ -134,7 +143,8 @@ h2 {
     margin-top: 10px;
     text-align: center;
 }
-.carousel_slide{
+
+.carousel_slide {
     justify-items: center;
     margin-left: 100%;
     background-color: #0056b3;

@@ -15,8 +15,13 @@ class CreateDoutoresServicosTable extends Migration
             $table->string('especialidade');
             $table->decimal('preco', 8, 2);
             $table->string('doutor_cpf');
-            $table->json('agenda_horarios')->nullable();
+            $table->date('data_inicio_periodo');
+            $table->date('data_fim_periodo');
+            $table->time('hora_inicio');
+            $table->time('hora_fim');
             $table->timestamps();
+
+            // Definindo a chave estrangeira para doutores
             $table->foreign('doutor_cpf')->references('cpf')->on('doutores')->onDelete('cascade');
         });
     }

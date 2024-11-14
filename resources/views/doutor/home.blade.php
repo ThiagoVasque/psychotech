@@ -11,7 +11,7 @@
                 <div class="card-body">
                     <h2 class="card-title">Minhas consultas</h2>
                     <p class="card-text">Veja suas consultas</p>
-                    <a href="{{ route('doutor.sessoes') }}" class="btn btn-primary btn-custom">Ver Sessões</a>
+                    <a href="{{ route('doutor.servicos') }}" class="btn btn-primary btn-custom">Ver Sessões</a>
                 </div>
             </div>
         </div>
@@ -44,34 +44,42 @@
         background-color: #f3f4f6;
         font-family: Arial, sans-serif;
     }
+
     .container {
         max-width: 900px;
     }
+
     .display-4 {
         font-weight: 700;
         color: #3b3f5c;
     }
+
     .lead {
         color: #6c757d;
     }
+
     .card-custom {
         border: 1px solid #e2e8f0;
         border-radius: 8px;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
         background-color: #ffffff;
     }
+
     .card-custom:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
     }
+
     .card-title {
         font-size: 1.25rem;
         color: #5a67d8;
     }
+
     .card-text {
         font-size: 1rem;
         color: #4a5568;
     }
+
     .btn-custom {
         background-color: #821AD1;
         border: none;
@@ -79,7 +87,8 @@
         border-radius: 4px;
         transition: background-color 0.2s ease;
     }
+
     .btn-custom:hover {
-        background-color: #9a46db; /* Tom mais claro ao passar o mouse */
+        background-color: #9a46db;
     }
 </style>

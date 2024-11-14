@@ -22,7 +22,7 @@ class CreateDoutoresTable extends Migration
             $table->string('estado');
             $table->string('telefone');
             $table->string('email')->unique();
-            $table->string('password'); 
+            $table->string('password');
             $table->timestamps();
         });
     }

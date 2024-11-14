@@ -41,18 +41,18 @@ class DiarioController extends Controller
             'titulo' => 'required|string|max:255',
             'texto' => 'required|string',
         ]);
-    
+
         // Encontra a anotação pelo ID
         $anotacao = Diario::where('id', $id)
             ->where('paciente_cpf', Auth::user()->cpf)
             ->firstOrFail();
-    
+
         // Atualiza a anotação
         $anotacao->update($request->only(['titulo', 'texto']));
-    
+
         return redirect()->route('paciente.diario')->with('success', 'Anotação atualizada com sucesso!');
     }
-    
+
     // Excluir uma anotação
     public function destroy($id)
     {

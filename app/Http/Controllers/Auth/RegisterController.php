@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Proner\Cpf;
-
+use Carbon\Carbon;
 
 class RegisterController extends Controller
 {
@@ -31,14 +31,21 @@ class RegisterController extends Controller
         $validator = Validator::make($request->all(), [
             'role' => ['required', Rule::in(['doutor', 'paciente'])],
             'nome' => 'required|string|max:255',
-            'data_nascimento' => 'required|date',
+            'data_nascimento' => 'required|date_format:d/m/Y',
             'cep' => 'required|string|max:255',
-            'cpf' => ['required', 'string', 'max:255', 'unique:pacientes,cpf', 'unique:doutores,cpf', function ($attribute, $value, $fail) {
-                // Valida o CPF com a biblioteca Proner
-                if (!Cpf::validate($value)) {
-                    $fail('O CPF informado é inválido.');
+            'cpf' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:pacientes,cpf',
+                'unique:doutores,cpf',
+                function ($attribute, $value, $fail) {
+                    // Valida o CPF com a biblioteca Proner
+                    if (!Cpf::validate($value)) {
+                        $fail('O CPF informado é inválido.');
+                    }
                 }
-            }],
+            ],
             'bairro' => 'required|string|max:255',
             'logradouro' => 'required|string|max:255',
             'numero' => 'required|string|max:255',
@@ -62,18 +69,29 @@ class RegisterController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
+        // Convertendo data de nascimento para o formato do banco
+        $dataNascimento = Carbon::createFromFormat('d/m/Y', $request->data_nascimento)->format('Y-m-d');
+
         // Coletando dados do request para salvar no banco
         $data = $request->only([
-            'nome', 'data_nascimento', 'cep', 'bairro',
-            'logradouro', 'numero', 'complemento', 'cidade',
-            'estado', 'telefone', 'email'
+            'nome',
+            'cep',
+            'bairro',
+            'logradouro',
+            'numero',
+            'complemento',
+            'cidade',
+            'estado',
+            'telefone',
+            'email'
         ]);
 
         // Remove os caracteres de formatação do CPF
         $cpf = preg_replace('/[^\d]/', '', $request->cpf);
 
-        // Adicionando CPF e senha ao array de dados
+        // Adicionando CPF, data de nascimento e senha ao array de dados
         $data['cpf'] = $cpf;
+        $data['data_nascimento'] = $dataNascimento;
         $data['password'] = Hash::make($request->password);
         $data['role'] = $request->role; // Adicionando o campo role
 

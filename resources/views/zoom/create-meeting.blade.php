@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reunião Zoom</title>
 </head>
+
 <body>
     @if(isset($meeting))
         <h1>Reunião Criada com Sucesso!</h1>
@@ -17,4 +19,5 @@
         <p>{{ $error }}</p>
     @endif
 </body>
+
 </html>
