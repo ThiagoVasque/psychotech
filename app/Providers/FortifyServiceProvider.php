@@ -31,9 +31,7 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Use o controlador de registro que você criou
         Fortify::createUsersUsing(RegisterController::class);
-
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
@@ -56,13 +54,11 @@ class FortifyServiceProvider extends ServiceProvider
             return view('auth.register');
         });
 
-        // Limitação de taxa para login
         RateLimiter::for('login', function (Request $request) {
             $throttleKey = Str::lower($request->input(Fortify::username())) . '|' . $request->ip();
             return Limit::perMinute(5)->by($throttleKey);
         });
 
-        // Limitação de taxa para autenticação de dois fatores
         RateLimiter::for('two-factor', function (Request $request) {
             return Limit::perMinute(5)->by($request->session()->get('login.id'));
         });

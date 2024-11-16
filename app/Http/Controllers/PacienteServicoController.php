@@ -2,25 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Slot;
+use App\Models\Agendamento;
+use App\Models\DoutorServico;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Doutor;
-use App\Models\DoutorServico;
 
 class PacienteServicoController extends Controller
 {
-    // Método para exibir os doutores e seus serviços
-    public function index()
+    public function agendar(Request $request, DoutorServico $servico)
     {
-        $doutores = Doutor::with('servicos')->get(); // Carrega doutores com serviços
-        return view('paciente.servicos', compact('doutores'));
+        // Verifica se o slot está disponível
+        $slot = Slot::where('doutor_servico_id', $servico->id)
+            ->where('id', $request->slot_id)
+            ->where('disponivel', true)
+            ->first();
+
+        if (!$slot) {
+            return redirect()->route('paciente.servicos')
+                ->with('error', 'Este slot não está disponível.');
+        }
+
+        // Cria o agendamento
+        $agendamento = Agendamento::create([
+            'paciente_cpf' => Auth::guard('paciente')->user()->cpf,
+            'doutor_servico_id' => $servico->id,
+            'slot_id' => $slot->id,
+            'status' => 'pendente', 
+        ]);
+
+        // Marca o slot como não disponível
+        $slot->disponivel = false;
+        $slot->save();
+
+        // Redireciona com sucesso
+        return redirect()->route('paciente.consultas')
+            ->with('success', 'Agendamento realizado com sucesso!');
     }
 
-    // Método para agendar um serviço
-    public function agendar(Request $request, $servicoId)
-    {
-        $paciente = Auth::user();
 
-        return redirect()->route('paciente.servicos')->with('success', 'Consulta agendada com sucesso!');
-    }
 }

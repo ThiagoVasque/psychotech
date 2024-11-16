@@ -5,10 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Doutor</title>
-
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!--  CSS -->
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    @stack('styles') 
 </head>
 
 <body>
@@ -74,25 +79,30 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <!-- Footer -->
+    <footer class="text-white text-center"
+        style="background-color: #821AD1; position: fixed; bottom: 0; width: 100%; z-index: 1000;">
+        <div class="container">
+            <p class="mb-1">Conecte-se com a gente:</p>
+            <a href="https://www.instagram.com/guico_felipe_/?igsh=MXJkZGdoNjl0ankycg%3D%3D" class="text-white mx-2"><i
+                    class="fab fa-instagram"></i></a>
+            <a href="https://www.instagram.com/thiagonvasque/?igsh=MTBjaW5naXpjMW95MQ%3D%3D" class="text-white mx-2"><i
+                    class="fab fa-instagram"></i></a>
+            <a href="https://github.com/ThiagoVasque/psychotech" class="text-white mx-2"><i
+                    class="fab fa-github"></i></a>
+        </div>
+        <div class="text-center">
+            <p class="mb-0">© 2024 PsychoTech. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    @stack('scripts') 
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
-
-<!-- Footer -->
-<footer class="text-white text-center"
-    style="background-color: #821AD1; position: fixed; bottom: 0; width: 100%; z-index: 1000;">
-    <div class="container">
-        <p class="mb-1">Conecte-se com a gente:</p>
-        <a href="https://www.instagram.com/guico_felipe_/?igsh=MXJkZGdoNjl0ankycg%3D%3D" class="text-white mx-2"><i
-                class="fab fa-instagram"></i></a>
-        <a href="https://www.instagram.com/thiagonvasque/?igsh=MTBjaW5naXpjMW95MQ%3D%3D" class="text-white mx-2"><i
-                class="fab fa-instagram"></i></a>
-        <a href="https://github.com/ThiagoVasque/psychotech" class="text-white mx-2"><i class="fab fa-github"></i></a>
-    </div>
-    <div class="text-center">
-        <p class="mb-0">© 2024 PsychoTech. Todos os direitos reservados.</p>
-    </div>
-</footer>
 
 </html>

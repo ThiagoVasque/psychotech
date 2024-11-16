@@ -4,7 +4,6 @@
 <div class="container mt-5">
     <h2 class="mb-4">Relatórios</h2>
 
-    <!-- Formulário de Filtro -->
     <form action="" method="GET" class="mb-4">
         <div class="form-group">
             <label for="nome">Nome do Paciente</label>
@@ -32,7 +31,6 @@
         </div>
     </form>
 
-    <!-- Tabela de Resultados -->
     <table class="table table-striped table-bordered">
         <thead class="thead-dark">
             <tr>

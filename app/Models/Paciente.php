@@ -31,4 +31,10 @@ class Paciente extends Authenticatable
     ];
 
     protected $hidden = ['password'];
+
+    // Relacionamento com agendamentos
+    public function agendamentos()
+    {
+        return $this->hasMany(Agendamento::class, 'paciente_cpf', 'cpf');
+    }
 }

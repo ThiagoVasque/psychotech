@@ -56,7 +56,6 @@
             </ul>
 
             <div class="text-center mb-4 mt-3">
-                <!-- Logout -->
                 <a href="{{ route('logout') }}"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                     class="btn btn-danger btn-sm">

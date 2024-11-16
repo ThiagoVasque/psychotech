@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DiarioController;
 use App\Http\Controllers\DoutorServicoController;
 use App\Http\Controllers\PacienteServicoController;
+use App\Http\Controllers\AgendamentoController;
 
 // Ignora as rotas padrão do Fortify
 Fortify::ignoreRoutes();
@@ -52,11 +53,11 @@ Route::prefix('doutor')->middleware('auth:doutor')->group(function () {
     Route::get('/relatorios', [DoutorController::class, 'relatorios'])->name('doutor.relatorios');
     Route::get('/videoconferencia', [DoutorController::class, 'videoconferencia'])->name('doutor.videoconferencia');
 
-    // Rotas para manipulação de serviços
+    // Rotas para os serviços do doutor
     Route::get('/servicos', [DoutorServicoController::class, 'index'])->name('doutor.servicos');  // Exibir todos os serviços
     Route::get('/servicos/create', [DoutorServicoController::class, 'create'])->name('doutor.servicos.create'); // Criar novo serviço
     Route::post('/servicos', [DoutorServicoController::class, 'store'])->name('doutor.servicos.store'); // Salvar serviço
-    Route::get('/servicos/{servico}/edit', [DoutorServicoController::class, 'edit'])->name('doutor.servicos.edit'); // Editar serviço
+    Route::get('/servicos/{servico}/edit', [DoutorServicoController::class, 'edit'])->name('doutor.servicos.editarservicos'); // Editar serviço
     Route::put('/servicos/{servico}', [DoutorServicoController::class, 'update'])->name('doutor.servicos.update'); // Atualizar serviço
     Route::delete('/servicos/{servico}', [DoutorServicoController::class, 'destroy'])->name('doutor.servicos.destroy'); // Excluir serviço
 });
@@ -67,3 +68,4 @@ Route::get('/zoom/create-meeting-form', function () {
 })->middleware('auth');
 
 Route::post('/zoom/create-meeting', [ZoomController::class, 'createMeeting'])->middleware('auth');
+

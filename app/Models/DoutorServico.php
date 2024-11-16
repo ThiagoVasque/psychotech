@@ -2,37 +2,27 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class DoutorServico extends Model
 {
-    protected $table = 'doutores_servicos';
+    use HasFactory;
 
+    protected $table = 'doutores_servicos';  
+    
     // Campos que podem ser preenchidos
     protected $fillable = [
-        'titulo',
-        'descricao',
-        'especialidade',
-        'preco',
-        'doutor_cpf',
-        'data_inicio_periodo',
-        'data_fim_periodo',
-        'hora_inicio',
-        'hora_fim'
+        'doutor_cpf', 'titulo', 'descricao', 'preco', 'hora_inicio', 'hora_fim', 'periodos'
     ];
-
-    // Casts para manipulação de datas
+    
     protected $casts = [
-        'data_inicio_periodo' => 'date',
-        'data_fim_periodo' => 'date',
-        'hora_inicio' => 'string',
-        'hora_fim' => 'string',
+        'periodos' => 'array',
     ];
 
-    // Relacionamento com o modelo Doutor
-    public function doutor()
-    {
-        return $this->belongsTo(Doutor::class, 'doutor_cpf', 'cpf')->withDefault();
-    }
-
+    public function slots()
+{
+    // relacionamento com o modelo Slot
+    return $this->hasMany(Slot::class, 'doutor_servico_id'); 
+}
 }

@@ -3,27 +3,30 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Route;
-use App\Rules\CpfReceitaValidator;
-use App\Services\CpfValidatorService;
 use Illuminate\Support\Facades\Validator;
-
+use Proner\Cpf; // Certifique-se de que o pacote está importado
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
+     *
+     * @return void
      */
-    public function register(): void
+    public function boot()
     {
-        //
+        // Registra a validação personalizada para CPF
+        Validator::extend('cpf', function ($attribute, $value, $parameters, $validator) {
+            return Cpf::validate($value); 
+        });
     }
 
     /**
-     * Bootstrap any application services.
+     * Registre os serviços de aplicação.
+     *
+     * @return void
      */
-    public function boot(): void
+    public function register()
     {
-
+        //
     }
 }

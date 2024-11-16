@@ -3,127 +3,154 @@
 namespace App\Http\Controllers;
 
 use App\Models\DoutorServico;
+use App\Models\Slot;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class DoutorServicoController extends Controller
 {
-    // Método para exibir todos os serviços do doutor
+    // Listar os serviços
     public function index()
     {
-        // Pega todos os serviços do doutor logado
-        $servicos = DoutorServico::where('doutor_cpf', auth()->user()->cpf)->get();
-
+        $servicos = DoutorServico::all();
         return view('doutor.servicos', compact('servicos'));
     }
 
-    // Método para exibir o formulário de criação de serviços
-    public function create()
-    {
-        $doutor = Auth::user();  // Pega o doutor logado
-        return view('doutor.servicos', compact('doutor'));
-    }
-
-    // Método para armazenar um novo serviço
+    // Criar novo serviço
     public function store(Request $request)
     {
-        // Validação de dados do serviço
-        $dados = $request->validate([
+        // Validação dos dados
+        $request->validate([
             'titulo' => 'required|string|max:255',
-            'descricao' => 'required|string',
-            'especialidade' => 'required|string',
+            'descricao' => 'nullable|string',
             'preco' => 'required|numeric',
-            'agenda_horarios' => 'array|required',
-            'agenda_horarios.*.data_inicio_periodo' => 'required|date',
-            'agenda_horarios.*.data_fim_periodo' => 'required|date',
-            'agenda_horarios.*.hora_inicio' => 'required|date_format:H:i',
-            'agenda_horarios.*.hora_fim' => 'required|date_format:H:i',
+            'periodos' => 'required|array',
+            'periodos.*.datas' => 'required|string',
+            'periodos.*.hora_inicio' => 'required|date_format:H:i',
+            'periodos.*.hora_fim' => 'required|date_format:H:i|after:periodos.*.hora_inicio',
         ]);
 
-        // Inserir os dados do serviço
-        foreach ($dados['agenda_horarios'] as $horario) {
-            DoutorServico::create([
-                'doutor_cpf' => $request->doutor_cpf,
-                'titulo' => $dados['titulo'],
-                'descricao' => $dados['descricao'],
-                'especialidade' => $dados['especialidade'],
-                'preco' => $dados['preco'],
-                'data_inicio_periodo' => $horario['data_inicio_periodo'],
-                'data_fim_periodo' => $horario['data_fim_periodo'],
-                'hora_inicio' => $horario['hora_inicio'],
-                'hora_fim' => $horario['hora_fim'],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+        // Processar os períodos antes de salvar
+        $periodos = array_map(function ($periodo) {
+            return [
+                'datas' => $periodo['datas'],
+                'hora_inicio' => $periodo['hora_inicio'],
+                'hora_fim' => $periodo['hora_fim'],
+            ];
+        }, $request->periodos);
+
+        // Salvar o serviço
+        $servico = DoutorServico::create([
+            'titulo' => $request->titulo,
+            'descricao' => $request->descricao,
+            'preco' => $request->preco,
+            'doutor_cpf' => auth()->user()->cpf,
+            'periodos' => json_encode($periodos),  // Salva o período como JSON
+        ]);
+
+        // Gerar slots para cada período
+        foreach ($periodos as $periodo) {
+            $this->gerarSlotsPorPeriodo($servico, $periodo);
         }
 
-        return redirect()->route('doutor.servicos')->with('success', 'Serviço cadastrado com sucesso!');
+        return redirect()->route('doutor.servicos');
     }
 
-    // Método para exibir o formulário de edição de um serviço
+    public function gerarSlotsPorPeriodo($servico, $periodo)
+    {
+        // faz a metamorfose ambulante de string virar data
+        $datas = explode(" to ", $periodo['datas']);
+        $data_inicio = Carbon::createFromFormat('d/m/Y', $datas[0]);
+        $data_fim = Carbon::createFromFormat('d/m/Y', $datas[1]);
+
+        // Hora de início e fim
+        $hora_inicio = Carbon::createFromFormat('H:i', $periodo['hora_inicio']);
+        $hora_fim = Carbon::createFromFormat('H:i', $periodo['hora_fim']);
+
+        // Loop para gerar os slots de cada dia no intervalo
+        $data_atual = $data_inicio;
+        while ($data_atual <= $data_fim) {
+            // Para cada novo dia, resetar a hora de início para o valor inicial do período
+            $hora_atual_inicio = $hora_inicio->copy();
+            $hora_atual_fim = $hora_fim->copy();
+
+            // Gera os slots para o dia atual
+            $this->criarSlotsPorDia($servico, $data_atual, $hora_atual_inicio, $hora_atual_fim);
+
+            // Avança para o próximo dia
+            $data_atual->addDay();
+        }
+    }
+
+    public function criarSlotsPorDia(DoutorServico $servico, Carbon $data_dia, Carbon $hora_inicio, Carbon $hora_fim)
+    {
+        // Loop para criar slots de 30 minutos entre hora_inicio e hora_fim
+        while ($hora_inicio < $hora_fim) {
+            // Cria o slot para o dia atual
+            Slot::create([
+                'doutor_servico_id' => $servico->id,
+                'data_hora' => $data_dia->copy()->setTimeFrom($hora_inicio),
+                'disponivel' => true
+            ]);
+
+            // Avança 30 minutos
+            $hora_inicio->addMinutes(30);
+        }
+    }
+
+
+
+    // Editar serviço 
     public function edit($id)
     {
         $servico = DoutorServico::findOrFail($id);
-
-        if ($servico->doutor_cpf != Auth::user()->cpf) {
-            return redirect()->route('doutor.servicos')->with('error', 'Você não tem permissão para editar esse serviço.');
-        }
-
-        return view('doutor.edit_servico', compact('servico')); // Certifique-se de ter uma view separada para edição
+        return response()->json($servico);
     }
 
-    // Método para atualizar um serviço existente
+    // Atualizar serviço
     public function update(Request $request, $id)
     {
-        // Validação para campos principais
-        $dados = $request->validate([
+        $validated = $request->validate([
             'titulo' => 'required|string|max:255',
-            'descricao' => 'required|string',
-            'especialidade' => 'required|string',
+            'descricao' => 'nullable|string',
             'preco' => 'required|numeric',
+            'periodos' => 'required|array',
+            'periodos.*.datas' => 'required|string',
+            'periodos.*.hora_inicio' => 'required|date_format:H:i',
+            'periodos.*.hora_fim' => 'required|date_format:H:i|after:periodos.*.hora_inicio',
         ]);
 
         $servico = DoutorServico::findOrFail($id);
+        $servico->update($validated);
 
-        // Verifica se o doutor logado é o dono do serviço
-        if ($servico->doutor_cpf != Auth::user()->cpf) {
-            return redirect()->route('doutor.servicos')->with('error', 'Você não tem permissão para editar esse serviço.');
+        // Limpar os slots antigos
+        $servico->slots()->delete();
+
+        // Regenerar os slots com base nos novos dados
+        foreach ($validated['periodos'] as $periodo) {
+            $this->gerarSlotsPorPeriodo($servico, $periodo);
         }
 
-        // Atualiza as informações principais do serviço
-        $servico->update($dados);
-
-        // Se a edição incluir a atualização dos horários
-        if ($request->has('agenda_horarios')) {
-            // Limpa os horários existentes antes de atualizar
-            $servico->horarios()->delete();
-
-            // Cria novos horários
-            foreach ($request->agenda_horarios as $horario) {
-                $servico->horarios()->create([
-                    'data_inicio_periodo' => $horario['data_inicio_periodo'],
-                    'data_fim_periodo' => $horario['data_fim_periodo'],
-                    'hora_inicio' => $horario['hora_inicio'],
-                    'hora_fim' => $horario['hora_fim'],
-                ]);
-            }
-        }
-
-        return redirect()->route('doutor.servicos')->with('success', 'Serviço atualizado com sucesso!');
+        return redirect()->route('doutor.servicos');
     }
 
-    // Método para excluir um serviço
+
     public function destroy($id)
     {
-        $servico = DoutorServico::findOrFail($id);
+        try {
+            // Encontre o serviço pelo id
+            $servico = DoutorServico::findOrFail($id);
 
-        // Verifica se o doutor logado é o dono do serviço
-        if ($servico->doutor_cpf != Auth::user()->cpf) {
-            return redirect()->route('doutor.servicos')->with('error', 'Você não tem permissão para excluir esse serviço.');
+            // Excluindo os slots relacionados a este serviço
+            $servico->slots()->delete();  // Exclui os slots relacionados ao serviço
+
+            // Agora exclui o serviço
+            $servico->delete();
+
+            return redirect()->route('doutor.servicos')->with('success', 'Serviço e seus slots excluídos com sucesso!');
+        } catch (\Exception $e) {
+            return redirect()->route('doutor.servicos')->with('error', 'Erro ao excluir serviço e seus slots!');
         }
-
-        $servico->delete();
-
-        return redirect()->route('doutor.servicos')->with('success', 'Serviço excluído com sucesso!');
     }
+
 }

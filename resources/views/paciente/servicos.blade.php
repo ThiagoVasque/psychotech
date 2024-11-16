@@ -16,12 +16,7 @@
                         <h5 class="card-title text-center">{{ $doutor->nome }}</h5>
                         <p class="card-text text-center"><strong>Especialidade:</strong> {{ $doutor->especialidade }}</p>
 
-
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <h6>Serviços:</h6>
-                            <a href="#" class="btn btn-outline-info btn-sm">Ver mais</a>
-                        </div>
-
+                        <h6>Serviços:</h6>
                         <ul class="list-unstyled mt-3">
                             @foreach ($doutor->servicos as $servico)
                                 <li class="mb-4">
@@ -31,15 +26,28 @@
                                             {{ $servico->descricao }}
                                         </div>
                                         <div>
-                                            <span class="badge bg-info">R$
-                                                {{ number_format($servico->preco, 2, ',', '.') }}</span>
+                                            <span class="badge bg-info">R$ {{ number_format($servico->preco, 2, ',', '.') }}</span>
                                         </div>
                                     </div>
-                                    <form action="{{ route('paciente.servicos.agendar', $servico->id) }}" method="POST"
-                                        class="mt-2">
-                                        @csrf
-                                        <button type="submit" class="btn btn-primary btn-sm w-100">Agendar Consulta</button>
-                                    </form>
+
+                                    <!-- Exibir horários disponíveis -->
+                                    @foreach ($servico->slots as $slot)
+                                        <div>
+                                            <p><strong>Data:</strong> {{ \Carbon\Carbon::parse($slot->data_hora)->format('d/m/Y') }}</p>
+                                            <p><strong>Horário:</strong> {{ \Carbon\Carbon::parse($slot->data_hora)->format('H:i') }} - 
+                                                {{ \Carbon\Carbon::parse($slot->data_hora)->addMinutes(30)->format('H:i') }}</p> <!-- Adiciona 30 minutos à hora de início para mostrar o horário de término -->
+                                            
+                                            @if ($slot->disponivel)
+                                                <form action="{{ route('paciente.servicos.agendar', $servico->id) }}" method="POST" class="mt-2">
+                                                    @csrf
+                                                    <input type="hidden" name="slot_id" value="{{ $slot->id }}">
+                                                    <button type="submit" class="btn btn-primary btn-sm w-100">Agendar Consulta</button>
+                                                </form>
+                                            @else
+                                                <p class="text-danger">Não disponível</p>
+                                            @endif
+                                        </div>
+                                    @endforeach
                                 </li>
                             @endforeach
                         </ul>
