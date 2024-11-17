@@ -30,24 +30,8 @@
                                         </div>
                                     </div>
 
-                                    <!-- Exibir horários disponíveis -->
-                                    @foreach ($servico->slots as $slot)
-                                        <div>
-                                            <p><strong>Data:</strong> {{ \Carbon\Carbon::parse($slot->data_hora)->format('d/m/Y') }}</p>
-                                            <p><strong>Horário:</strong> {{ \Carbon\Carbon::parse($slot->data_hora)->format('H:i') }} - 
-                                                {{ \Carbon\Carbon::parse($slot->data_hora)->addMinutes(30)->format('H:i') }}</p> <!-- Adiciona 30 minutos à hora de início para mostrar o horário de término -->
-                                            
-                                            @if ($slot->disponivel)
-                                                <form action="{{ route('paciente.servicos.agendar', $servico->id) }}" method="POST" class="mt-2">
-                                                    @csrf
-                                                    <input type="hidden" name="slot_id" value="{{ $slot->id }}">
-                                                    <button type="submit" class="btn btn-primary btn-sm w-100">Agendar Consulta</button>
-                                                </form>
-                                            @else
-                                                <p class="text-danger">Não disponível</p>
-                                            @endif
-                                        </div>
-                                    @endforeach
+                                    <!-- Link para exibir os slots desse serviço -->
+                                    <a href="{{ route('paciente.servicos.slots', $servico->id) }}" class="btn btn-primary btn-sm mt-2 w-100">Ver Disponibilidade</a>
                                 </li>
                             @endforeach
                         </ul>

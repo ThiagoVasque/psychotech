@@ -22,7 +22,7 @@ class DoutorServico extends Model
 
     public function slots()
 {
-    // relacionamento com o modelo Slot
+    // relacionamento com o model Slot
     return $this->hasMany(Slot::class, 'doutor_servico_id'); 
 }
 }

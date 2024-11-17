@@ -16,8 +16,9 @@ class CreateConsultasTable extends Migration
             $table->foreign('paciente_cpf')->references('cpf')->on('pacientes')->onDelete('cascade');
             $table->text('anotacao')->nullable();
             $table->dateTime('data_hora');
-            $table->string('link_doutor');
-            $table->string('link_paciente');
+            $table->text('link_doutor');
+            $table->text('link_paciente');
+            $table->enum('status', ['pendente', 'confirmado', 'cancelado'])->default('pendente');
             $table->timestamps();
         });
     }

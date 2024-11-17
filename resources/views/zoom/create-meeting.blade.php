@@ -1,23 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app_paciente')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reunião Zoom</title>
-</head>
+@section('content')
+<div class="container mt-5">
+    <h2 class="mb-4">Detalhes da Reunião</h2>
 
-<body>
     @if(isset($meeting))
-        <h1>Reunião Criada com Sucesso!</h1>
-        <p>Tópico: {{ $meeting['topic'] }}</p>
-        <p>ID da Reunião: {{ $meeting['id'] }}</p>
-        <p>Link da Reunião: <a href="{{ $meeting['join_url'] }}">{{ $meeting['join_url'] }}</a></p>
-        <p>Iniciar Reunião (Host): <a href="{{ $meeting['start_url'] }}">Iniciar Reunião</a></p>
-    @else
-        <h1>Erro ao Criar Reunião</h1>
-        <p>{{ $error }}</p>
+        <div class="alert alert-success">
+            <h4>Reunião criada com sucesso!</h4>
+            <p><strong>Link do Doutor: </strong><a href="{{ $meeting['join_url'] }}" target="_blank">Acessar Reunião</a></p>
+            <p><strong>Link do Paciente: </strong><a href="{{ $meeting['start_url'] }}" target="_blank">Acessar Reunião</a></p>
+        </div>
+    @elseif(isset($error))
+        <div class="alert alert-danger">
+            <p>{{ $error }}</p>
+        </div>
     @endif
-</body>
-
-</html>
+</div>
+@endsection

@@ -9,13 +9,23 @@ class Slot extends Model
 {
     use HasFactory;
 
-    protected $table = 'slots';
+    protected $fillable = [
+        'doutor_servico_id', 'data_hora', 'disponivel', 'paciente_cpf'
+    ];
 
-    protected $fillable = ['doutor_servico_id', 'data_hora', 'disponivel']; 
+    public $timestamps = false;
 
     // Relacionamento com DoutorServico
     public function doutorServico()
     {
-        return $this->belongsTo(DoutorServico::class, 'doutor_servico_id'); 
+        return $this->belongsTo(DoutorServico::class);
+    }
+
+    // Relacionamento com Paciente
+    public function paciente()
+    {
+        return $this->belongsTo(Paciente::class);
     }
 }
+
+

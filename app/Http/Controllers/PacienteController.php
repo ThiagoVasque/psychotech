@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Doutor;
 use App\Models\DoutorServico;
+use App\Models\Consulta;
 
 class PacienteController extends Controller
 {
@@ -19,13 +20,15 @@ class PacienteController extends Controller
     public function consultas()
     {
         $paciente = Auth::user();
-        return view('paciente.consultas', compact('paciente'));
+
+        $consultas = Consulta::where('paciente_cpf', $paciente->cpf)->get();
+
+        return view('paciente.consultas', compact('paciente', 'consultas'));
     }
 
     //Método para exibir os serviços dos doutores
     public function doutores()
     {
-        // Buscar todos os doutores com seus serviços
         $doutores = Doutor::with('servicos')->get();
 
         return view('paciente.servicos', compact('doutores'));

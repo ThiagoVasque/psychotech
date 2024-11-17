@@ -14,8 +14,6 @@ return new class extends Migration {
             $table->decimal('preco', 8, 2);
             $table->json('periodos')->nullable();  
             $table->timestamps();
-
-            // Chave estrangeira
             $table->foreign('doutor_cpf')->references('cpf')->on('doutores')->onDelete('cascade');
         });
     }

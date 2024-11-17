@@ -135,7 +135,7 @@
 @endsection
 
 @push('scripts')
-    <!-- Flatpickr -->
+    <!-- sistema do calendario-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
@@ -146,7 +146,7 @@
                 mode: "range",
                 dateFormat: "d/m/Y",
                 locale: "pt",
-                minDate: "today", // Impede a seleção de datas passadas
+                minDate: "today", // valida datas passadas
             });
 
             // Lógica de edição de serviço
@@ -180,7 +180,7 @@
 
                 document.getElementById('editarPeriodos').innerHTML = periodosHTML;
 
-                // Reaplica o flatpickr aos novos campos
+                // usa o calendario nos novos periodos
                 flatpickr(".flatpickr", {
                     mode: "range",
                     dateFormat: "d/m/Y",

@@ -98,8 +98,6 @@ class DoutorServicoController extends Controller
         }
     }
 
-
-
     // Editar serviço 
     public function edit($id)
     {

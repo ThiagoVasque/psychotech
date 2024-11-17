@@ -22,14 +22,15 @@ class Doutor extends Authenticatable
     public function consultasDisponiveis()
     {
         return $this->hasManyThrough(
-            Slot::class,  
-            DoutorServico::class, 
-            'doutor_cpf',  
-            'doutor_servico_id',
-            'cpf',  
-            'id' 
+            Slot::class,
+            DoutorServico::class,
+            'doutor_cpf', 
+            'doutor_servico_id',  
+            'cpf', 
+            'id'  
         );
     }
+
 
     protected $fillable = [
         'crm',

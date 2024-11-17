@@ -10,7 +10,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DiarioController;
 use App\Http\Controllers\DoutorServicoController;
 use App\Http\Controllers\PacienteServicoController;
-use App\Http\Controllers\AgendamentoController;
+use App\Http\Controllers\ConsultaController;
 
 // Ignora as rotas padrão do Fortify
 Fortify::ignoreRoutes();
@@ -32,12 +32,21 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Rotas para Pacientes
 Route::prefix('paciente')->middleware('auth:paciente')->group(function () {
+    
+    //Home do Paciente
     Route::get('/', [PacienteController::class, 'home'])->name('paciente.home');
-    Route::get('/consultas', [PacienteController::class, 'consultas'])->name('paciente.consultas');
+    
+    //Rota para as consultas agendadas
+    Route::get('/consultas', [ConsultaController::class, 'index'])->name('paciente.consultas');
+    Route::post('/consultas/agendar/{slot}', [PacienteServicoController::class, 'agendar'])->name('consulta.agendar');
+   
+    //Rota do historico de consultas
     Route::get('/historico', [PacienteController::class, 'historico'])->name('paciente.historico');
-
+    
+    //Rotas para os serviços de doutores
     Route::get('/servicos', [PacienteServicoController::class, 'index'])->name('paciente.servicos');
-    Route::post('/servicos/{servico}/agendar', [PacienteServicoController::class, 'agendar'])->name('paciente.servicos.agendar');
+    Route::post('/servicos/{servico}/agendar/{slotId}', [PacienteServicoController::class, 'agendar'])->name('paciente.servicos.agendar');
+    Route::get('/servicos/{servico}/slots', [PacienteServicoController::class, 'exibirSlots'])->name('paciente.servicos.slots');
 
     //Rota de anotações
     Route::get('/diario', [DiarioController::class, 'index'])->name('paciente.diario');
@@ -49,23 +58,17 @@ Route::prefix('paciente')->middleware('auth:paciente')->group(function () {
 // Rotas para Doutores
 Route::prefix('doutor')->middleware('auth:doutor')->group(function () {
     Route::get('/', [DoutorController::class, 'home'])->name('doutor.home');
+
     Route::get('/pacientes', [DoutorController::class, 'pacientes'])->name('doutor.pacientes');
+    
     Route::get('/relatorios', [DoutorController::class, 'relatorios'])->name('doutor.relatorios');
-    Route::get('/videoconferencia', [DoutorController::class, 'videoconferencia'])->name('doutor.videoconferencia');
 
     // Rotas para os serviços do doutor
-    Route::get('/servicos', [DoutorServicoController::class, 'index'])->name('doutor.servicos');  // Exibir todos os serviços
-    Route::get('/servicos/create', [DoutorServicoController::class, 'create'])->name('doutor.servicos.create'); // Criar novo serviço
-    Route::post('/servicos', [DoutorServicoController::class, 'store'])->name('doutor.servicos.store'); // Salvar serviço
-    Route::get('/servicos/{servico}/edit', [DoutorServicoController::class, 'edit'])->name('doutor.servicos.editarservicos'); // Editar serviço
-    Route::put('/servicos/{servico}', [DoutorServicoController::class, 'update'])->name('doutor.servicos.update'); // Atualizar serviço
-    Route::delete('/servicos/{servico}', [DoutorServicoController::class, 'destroy'])->name('doutor.servicos.destroy'); // Excluir serviço
+    Route::get('/servicos', [DoutorServicoController::class, 'index'])->name('doutor.servicos');
+    Route::get('/servicos/create', [DoutorServicoController::class, 'create'])->name('doutor.servicos.create');
+    Route::post('/servicos', [DoutorServicoController::class, 'store'])->name('doutor.servicos.store');
+    Route::put('/servicos/{servico}', [DoutorServicoController::class, 'update'])->name('doutor.servicos.update');
+    Route::delete('/servicos/{servico}', [DoutorServicoController::class, 'destroy'])->name('doutor.servicos.destroy');
+
 });
-
-// Rotas para o Zoom
-Route::get('/zoom/create-meeting-form', function () {
-    return view('zoom.create-meeting-form');
-})->middleware('auth');
-
-Route::post('/zoom/create-meeting', [ZoomController::class, 'createMeeting'])->middleware('auth');
 

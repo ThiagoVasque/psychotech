@@ -35,6 +35,6 @@ class Paciente extends Authenticatable
     // Relacionamento com agendamentos
     public function agendamentos()
     {
-        return $this->hasMany(Agendamento::class, 'paciente_cpf', 'cpf');
+        return $this->hasMany(Consulta::class, 'paciente_cpf', 'cpf');
     }
 }
