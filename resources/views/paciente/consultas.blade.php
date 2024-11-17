@@ -13,21 +13,16 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>...</td>
-                <td>...</td>
-                <td><a href="" target="_blank" class="btn btn-info btn-sm">Acessar</a></td>
-            </tr>
-            <tr>
-                <td>...</td>
-                <td>...</td>
-                <td><a href="" target="_blank" class="btn btn-info btn-sm">Acessar</a></td>
-            </tr>
-            <tr>
-                <td>...</td>
-                <td>...</td>
-                <td><a href="" target="_blank" class="btn btn-info btn-sm">Acessar</a></td>
-            </tr>
+            @foreach($consultas as $consulta)
+                <div class="consulta">
+                    <h3>Consulta com Doutor {{ $consulta->doutor->nome }}</h3>
+                    <p>Data e Hora: {{ $consulta->data_hora }}</p>
+                    <p>Anotação: {{ $consulta->anotacao }}</p>
+
+                    <p><strong>Link para a Videochamada:</strong></p>
+                    <p><a href="{{ $consulta->link_paciente }}" target="_blank">Entrar na Videochamada (Paciente)</a></p>
+                </div>
+            @endforeach
         </tbody>
     </table>
 </div>

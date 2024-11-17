@@ -41,4 +41,3 @@ class ZoomController extends Controller
 }
 
 }
-

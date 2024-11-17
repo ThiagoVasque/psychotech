@@ -18,6 +18,8 @@ class CreateConsultasTable extends Migration
             $table->dateTime('data_hora');
             $table->string('link_doutor');
             $table->string('link_paciente');
+            // Adicionando o campo 'status' com valores possíveis e valor padrão
+            $table->enum('status', ['pendente', 'confirmado', 'cancelado'])->default('pendente');
             $table->timestamps();
         });
     }

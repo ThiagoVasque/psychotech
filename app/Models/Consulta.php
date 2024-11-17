@@ -5,15 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Agendamento extends Model
+class Consulta extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'paciente_cpf', 
-        'slot_id', 
-        'data_agendamento', 
-        'status'
+        'doutor_cpf', 
+        'data_hora', 
+        'status', 
+        'link_doutor', 
+        'link_paciente'
     ];
 
     // Relacionamento com o paciente
@@ -22,9 +24,9 @@ class Agendamento extends Model
         return $this->belongsTo(Paciente::class, 'paciente_cpf', 'cpf');
     }
 
-    // Relacionamento com o slot
-    public function slot()
+    // Relacionamento com o doutor
+    public function doutor()
     {
-        return $this->belongsTo(Slot::class, 'slot_id');
+        return $this->belongsTo(Doutor::class, 'doutor_cpf', 'cpf');
     }
 }

@@ -244,11 +244,17 @@
     </div>
 
     <script>
+
+
         $(document).ready(function () {
+            // Máscaras para campos
             $("#cpf").mask("000.000.000-00");
             $("#data_nascimento").mask("00/00/0000");
             $("#telefone").mask("(00) 00000-0000");
             $("#cep").mask("00000-000");
+
+            // Adicionar máscara para o campo de CRM
+            $("#crm").mask("00000-AA");
 
             // Exibir campo de CRM apenas para o perfil "Doutor"
             $('#role').change(function () {
@@ -256,6 +262,7 @@
                     $('#crmField').show();
                 } else {
                     $('#crmField').hide();
+                    $('#crm').val(''); // Limpa o campo CRM quando ocultado
                 }
             });
 
@@ -304,6 +311,8 @@
                 $("#submitBtn").toggle(currentStep === totalSteps);
             }
         });
+
+
     </script>
 
 </body>

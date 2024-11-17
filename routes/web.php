@@ -2,6 +2,7 @@
 
 use Laravel\Fortify\Fortify;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\ForgotPasswordController; // Importação adicionada
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\DoutorController;
@@ -10,7 +11,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DiarioController;
 use App\Http\Controllers\DoutorServicoController;
 use App\Http\Controllers\PacienteServicoController;
-use App\Http\Controllers\AgendamentoController;
+use App\Http\Controllers\ConsultaController;
 
 // Ignora as rotas padrão do Fortify
 Fortify::ignoreRoutes();
@@ -23,6 +24,10 @@ Route::get('/', function () {
     return view('home');
 })->name('home');
 
+// Rotas de Recuperação de Senha
+Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+
 // Rotas de Autenticação
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
@@ -33,13 +38,17 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Rotas para Pacientes
 Route::prefix('paciente')->middleware('auth:paciente')->group(function () {
     Route::get('/', [PacienteController::class, 'home'])->name('paciente.home');
-    Route::get('/consultas', [PacienteController::class, 'consultas'])->name('paciente.consultas');
+
+    Route::get('/consultas', [ConsultaController::class, 'index'])->name('paciente.consultas');
+    Route::post('/agendar/{slot_id}', [ConsultaController::class, 'agendar'])->name('agendar');
+
     Route::get('/historico', [PacienteController::class, 'historico'])->name('paciente.historico');
 
     Route::get('/servicos', [PacienteServicoController::class, 'index'])->name('paciente.servicos');
     Route::post('/servicos/{servico}/agendar', [PacienteServicoController::class, 'agendar'])->name('paciente.servicos.agendar');
+    Route::get('/servicos/{servico}/slots', [PacienteServicoController::class, 'exibirSlots'])->name('paciente.servicos.slots');
 
-    //Rota de anotações
+    // Rota de anotações
     Route::get('/diario', [DiarioController::class, 'index'])->name('paciente.diario');
     Route::post('/diario', [DiarioController::class, 'store'])->name('paciente.storeDiario');
     Route::put('/diario/{id}', [DiarioController::class, 'update'])->name('paciente.updateDiario');
@@ -68,4 +77,3 @@ Route::get('/zoom/create-meeting-form', function () {
 })->middleware('auth');
 
 Route::post('/zoom/create-meeting', [ZoomController::class, 'createMeeting'])->middleware('auth');
-

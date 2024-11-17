@@ -167,10 +167,7 @@
     <!-- Footer -->
     <div class="container">
         <p class="mb-0">Conecte-se com a gente:</p>
-        <a href="https://www.instagram.com/guico_felipe_/?igsh=MXJkZGdoNjl0ankycg%3D%3D" class="text-white mx-2"><i
-                class="fab fa-instagram"></i></a>
-        <a href="https://www.instagram.com/thiagonvasque/?igsh=MTBjaW5naXpjMW95MQ%3D%3D" class="text-white mx-2"><i
-                class="fab fa-instagram"></i></a>
+    
         <a href="https://github.com/ThiagoVasque/psychotech" class="text-white mx-2"><i class="fab fa-github"></i></a>
     </div>
     <div class="text-center mt-2">
