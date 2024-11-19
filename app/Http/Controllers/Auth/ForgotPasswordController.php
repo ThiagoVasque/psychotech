@@ -2,47 +2,85 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class ForgotPasswordController extends Controller
 {
     /**
-     * Exibe o formulário de solicitação de redefinição de senha.
+     * Exibe o formulário de solicitação de link de redefinição de senha.
      *
      * @return \Illuminate\View\View
      */
     public function showLinkRequestForm()
     {
-        return view('auth.password-reset'); // Certifique-se de que a view 'auth.password-reset' exista
+        return view('auth.password-forgot');
     }
 
     /**
-     * Envia o link de redefinição de senha para o email fornecido.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * Envia o link de redefinição de senha para o email.
      */
     public function sendResetLinkEmail(Request $request)
     {
-        // Valida o email
         $request->validate([
-            'email' => 'required|email|exists:users,email',
-        ], [
-            'email.required' => 'O campo email é obrigatório.',
-            'email.email' => 'Por favor, insira um endereço de email válido.',
-            'email.exists' => 'Este endereço de email não foi encontrado em nossos registros.',
+            'email' => 'required|email', 
         ]);
 
-        // Tenta enviar o link de redefinição
-        $status = Password::sendResetLink(
-            $request->only('email')
+        // Descobre qual broker usar com base no tipo de usuário (doutor ou paciente)
+        $user = \App\Models\Doutor::where('email', $request->email)->first() ?? \App\Models\Paciente::where('email', $request->email)->first();
+
+        if ($user) {
+            $broker = $user instanceof \App\Models\Doutor ? 'doutores' : 'pacientes';
+
+            // Envia o link de redefinição de senha
+            $response = Password::broker($broker)->sendResetLink($request->only('email'));
+
+            return $response == Password::RESET_LINK_SENT
+                ? back()->with('status', __($response))
+                : back()->withErrors(['email' => __($response)]);
+        }
+
+        // Caso o email não exista
+        return back()->withErrors(['email' => 'Este email não está registrado.']);
+    }
+
+    /**
+     * Exibe o formulário de redefinição de senha.
+     */
+    public function showResetForm(Request $request, $token)
+    {
+        return view('auth.password-reset', [
+            'token' => $token,
+        ]);
+    }
+
+    /**
+     * Redefine a senha sem precisar solicitar o email ou CPF novamente.
+     */
+    public function reset(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $broker = $request->has('email') && \App\Models\Doutor::where('email', $request->email)->exists()
+            ? 'doutores'
+            : 'pacientes';
+
+        $response = Password::broker($broker)->reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => bcrypt($password),
+                ])->save();
+            }
         );
 
-        // Retorna uma resposta baseada no status
-        return $status === Password::RESET_LINK_SENT
-            ? back()->with(['status' => __($status)])
-            : back()->withErrors(['email' => __($status)]);
+        return $response == Password::PASSWORD_RESET
+            ? redirect()->route('login')->with('status', __($response))
+            : back()->withErrors(['email' => __($response)]);
     }
+
 }

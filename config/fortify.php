@@ -9,37 +9,50 @@ return [
 
     'passwords' => 'users',
 
-    'username' => 'cpf', // Define 'email' como o campo de login
+    'username' => 'cpf',
 
     'email' => 'email',
 
-    'lowercase_usernames' => true, // Armazena nomes de usuário em minúsculas
+    'lowercase_usernames' => true,
 
-    'home' => '/home', // Caminho para redirecionar após login
+    'home' => '/home',
 
-    'prefix' => '', // Prefixo para as rotas do Fortify
+    'prefix' => '',
 
-    'domain' => null, // Domínio para as rotas do Fortify
+    'domain' => null,
 
-    'middleware' => ['web'], // Middleware padrão para as rotas
+    'middleware' => ['web'],
 
     'limiters' => [
         'login' => 'login',
         'two-factor' => 'two-factor',
     ],
 
-    'views' => true, // Habilita views para registro e login
+    'views' => true,
 
     'features' => [
-        Features::registration(), // Habilita registro de usuários
-        Features::resetPasswords(), // Habilita redefinição de senhas
-        // Features::emailVerification(), // Descomente se precisar de verificação de e-mail
-        Features::updateProfileInformation(), // Habilita atualização de informações do perfil
-        Features::updatePasswords(), // Habilita atualização de senhas
-        Features::twoFactorAuthentication([ // Habilita autenticação de dois fatores
+        Features::registration(), 
+        Features::resetPasswords(), 
+        Features::updateProfileInformation(), 
+        Features::updatePasswords(), 
+        Features::twoFactorAuthentication([ 
             'confirm' => true,
             'confirmPassword' => true,
-            // 'window' => 0, // Descomente e ajuste se precisar de uma janela de verificação
         ]),
+    ],
+
+    'passwords' => [
+        'pacientes' => [
+            'provider' => 'pacientes',
+            'table' => 'pacientes',
+            'expire' => 60,
+            'throttle' => 180, 
+        ],
+        'doutores' => [
+            'provider' => 'doutores',
+            'table' => 'doutores',
+            'expire' => 60,
+            'throttle' => 180, 
+        ],
     ],
 ];

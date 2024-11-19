@@ -58,10 +58,20 @@ class DoutorServicoController extends Controller
 
     public function gerarSlotsPorPeriodo($servico, $periodo)
     {
-        // faz a metamorfose ambulante de string virar data
+        // Verifica se o formato das datas está correto
         $datas = explode(" to ", $periodo['datas']);
-        $data_inicio = Carbon::createFromFormat('d/m/Y', $datas[0]);
-        $data_fim = Carbon::createFromFormat('d/m/Y', $datas[1]);
+
+        if (count($datas) === 1) {
+            // Caso haja apenas uma data, a data_inicio e data_fim serão iguais
+            $data_inicio = Carbon::createFromFormat('d/m/Y', $datas[0]);
+            $data_fim = $data_inicio;  // A data final será igual à inicial
+        } elseif (count($datas) === 2) {
+            // Caso haja o intervalo de duas datas, atribui as duas datas corretamente
+            $data_inicio = Carbon::createFromFormat('d/m/Y', $datas[0]);
+            $data_fim = Carbon::createFromFormat('d/m/Y', $datas[1]);
+        } else {
+            throw new \Exception('Formato de datas inválido. A string deve conter "data_inicio" ou "data_inicio to data_fim".');
+        }
 
         // Hora de início e fim
         $hora_inicio = Carbon::createFromFormat('H:i', $periodo['hora_inicio']);
@@ -77,10 +87,17 @@ class DoutorServicoController extends Controller
             // Gera os slots para o dia atual
             $this->criarSlotsPorDia($servico, $data_atual, $hora_atual_inicio, $hora_atual_fim);
 
-            // Avança para o próximo dia
-            $data_atual->addDay();
+            // Avança para o próximo dia, mas só se a data final for maior que a data atual
+            if ($data_atual < $data_fim) {
+                $data_atual->addDay();
+            } else {
+                break;  // Se a data atual for igual à data final, finaliza o loop
+            }
         }
     }
+
+
+
 
     public function criarSlotsPorDia(DoutorServico $servico, Carbon $data_dia, Carbon $hora_inicio, Carbon $hora_fim)
     {
@@ -98,7 +115,7 @@ class DoutorServicoController extends Controller
         }
     }
 
-    // Editar serviço 
+    // Editar serviço
     public function edit($id)
     {
         $servico = DoutorServico::findOrFail($id);
@@ -132,7 +149,6 @@ class DoutorServicoController extends Controller
         return redirect()->route('doutor.servicos');
     }
 
-
     public function destroy($id)
     {
         try {
@@ -140,7 +156,7 @@ class DoutorServicoController extends Controller
             $servico = DoutorServico::findOrFail($id);
 
             // Excluindo os slots relacionados a este serviço
-            $servico->slots()->delete();  // Exclui os slots relacionados ao serviço
+            $servico->slots()->delete();  
 
             // Agora exclui o serviço
             $servico->delete();
@@ -150,5 +166,4 @@ class DoutorServicoController extends Controller
             return redirect()->route('doutor.servicos')->with('error', 'Erro ao excluir serviço e seus slots!');
         }
     }
-
 }

@@ -19,7 +19,7 @@ class RegisterController extends Controller
      */
     public function showRegistrationForm()
     {
-        return view('auth.register'); // Certifique-se de que a view 'auth.register' existe
+        return view('auth.register');
     }
 
     /**
@@ -72,7 +72,6 @@ class RegisterController extends Controller
         // Convertendo data de nascimento para o formato do banco
         $dataNascimento = Carbon::createFromFormat('d/m/Y', $request->data_nascimento)->format('Y-m-d');
 
-        // Coletando dados do request para salvar no banco
         $data = $request->only([
             'nome',
             'cep',

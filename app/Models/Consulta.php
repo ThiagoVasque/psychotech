@@ -15,7 +15,8 @@ class Consulta extends Model
         'data_hora', 
         'status', 
         'link_doutor', 
-        'link_paciente'
+        'link_paciente',
+        'anotacao',
     ];
 
     // Relacionamento com o paciente
