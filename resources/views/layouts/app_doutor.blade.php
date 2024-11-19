@@ -34,8 +34,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('doutor.pacientes') }}">
-                        <i class="fas fa-user"></i> Meus Pacientes
+                    <a class="nav-link" href="{{ route('doutor.consultas') }}">
+                        <i class="fas fa-user"></i> Minhas consultas
                     </a>
                 </li>
                 <li class="nav-item">
@@ -46,11 +46,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('doutor.relatorios') }}">
                         <i class="fas fa-file-alt"></i> Relatórios
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('doutor.videoconferencia') }}">
-                        <i class="fas fa-video"></i> Consultas
                     </a>
                 </li>
             </ul>
@@ -92,7 +87,6 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

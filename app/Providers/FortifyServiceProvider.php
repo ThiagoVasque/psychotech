@@ -15,6 +15,8 @@ use Laravel\Fortify\Fortify;
 use App\Models\Doutor;
 use App\Models\Paciente;
 use App\Http\Controllers\Auth\RegisterController; // Adicione essa linha
+use App\Responses\ResetPasswordViewResponse;
+use Laravel\Fortify\Contracts\ResetPasswordViewResponse as ResetPasswordViewResponseContract;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -54,6 +56,11 @@ class FortifyServiceProvider extends ServiceProvider
             return view('auth.register');
         });
 
+        Fortify::resetPasswordView(function () {
+            return view('auth.password-reset');
+        });
+
+
         RateLimiter::for('login', function (Request $request) {
             $throttleKey = Str::lower($request->input(Fortify::username())) . '|' . $request->ip();
             return Limit::perMinute(5)->by($throttleKey);
@@ -62,5 +69,8 @@ class FortifyServiceProvider extends ServiceProvider
         RateLimiter::for('two-factor', function (Request $request) {
             return Limit::perMinute(5)->by($request->session()->get('login.id'));
         });
+
+
+
     }
 }

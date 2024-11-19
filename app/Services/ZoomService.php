@@ -30,7 +30,6 @@ class ZoomService
         return $accessToken;
     }
 
-    // Gera o token de acesso a partir da API OAuth do Zoom
     private function generateAccessToken()
     {
         $response = Http::withBasicAuth(config('zoom.client_id'), config('zoom.client_secret'))
@@ -40,22 +39,18 @@ class ZoomService
                 'account_id' => config('zoom.account_id'),
             ]);
 
-        // Verifica se a resposta foi bem-sucedida
         if ($response->successful()) {
             return $response->json()['access_token'];
         } else {
-
             throw new \Exception('Failed to obtain access token from Zoom: ' . $response->body());
         }
     }
 
-    // Cria uma reunião no Zoom
-    public function createMeeting(array $data)
+    public function createMeeting($data)
     {
         $response = Http::withToken($this->accessToken)
             ->post('https://api.zoom.us/v2/users/me/meetings', $data);
 
-        // reunião foi bem-sucedida
         if (!$response->successful()) {
             throw new \Exception('Zoom API Error: ' . $response->body());
         }

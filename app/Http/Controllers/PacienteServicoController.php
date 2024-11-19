@@ -4,13 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\Doutor;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Doutor;
 use App\Models\DoutorServico;
 use Illuminate\Http\Request;
 use App\Models\Slot;
 use App\Models\Consulta;
-use App\Services\ZoomService; 
+use App\Services\ZoomService;
 
 class PacienteServicoController extends Controller
 {
@@ -61,12 +59,13 @@ class PacienteServicoController extends Controller
         if ($linksZoom) {
             // Criar a consulta (agendamento)
             $consulta = new Consulta();
-            $consulta->doutor_cpf = $servico->doutor_cpf;  
+            $consulta->doutor_cpf = $servico->doutor_cpf;
             $consulta->paciente_cpf = $request->input('paciente_cpf');
             $consulta->data_hora = $slot->data_hora;
             $consulta->link_doutor = $linksZoom['link_doutor'];
             $consulta->link_paciente = $linksZoom['link_paciente'];
-            $consulta->status = 'pendente';  
+            $consulta->status = 'pendente';
+            $consulta->anotacao = $request->input('anotacao'); 
             $consulta->save();
 
             return redirect()->route('paciente.consultas')->with('success', 'Consulta agendada com sucesso!');
@@ -80,12 +79,16 @@ class PacienteServicoController extends Controller
         // Preparar os dados para a reunião
         $meetingData = [
             'topic' => 'Consulta Telemedicina',
-            'type' => 2, //reuniao agendada
-            'start_time' => \Carbon\Carbon::parse($dataHora)->toISOString(), 
-            'duration' => 30, 
+            'type' => 2,
+            'start_time' => \Carbon\Carbon::parse($dataHora)->toISOString(),
+            'duration' => 30,
             'settings' => [
                 'host_video' => true,
                 'participant_video' => true,
+                'mute_upon_entry' => true,
+                'join_before_host' => false,
+                'participant_audio' => 'voip',
+                'waiting_room' => false,
             ],
         ];
 
@@ -93,20 +96,33 @@ class PacienteServicoController extends Controller
             // Criar a reunião no Zoom
             $meeting = $this->zoomService->createMeeting($meetingData);
 
-            if (isset($meeting['start_url'])) {
+            \Log::info('Resposta do Zoom: ', $meeting);
+
+            if (isset($meeting['start_url']) && isset($meeting['join_url']) && isset($meeting['password'])) {
+                // URL para o participante (paciente)
+                $joinUrl = $meeting['join_url'];
+                $meetingId = $meeting['id'];
+                $password = $meeting['password'];
+
+                $joinUrl = 'https://app.zoom.us/wc/' . $meetingId . '/join?fromPWA=1&pwd=' . urlencode($password);
+
+                // Link para o doutor (host)
+                $startUrl = 'https://app.zoom.us/wc/' . $meetingId . '/start?fromPWA=1&pwd=' . urlencode($password);
+
                 // Retorna os links para o doutor e paciente
                 return [
-                    'link_doutor' => $meeting['start_url'],  // Link do doutor
-                    'link_paciente' => $meeting['join_url'], // Link do paciente
+                    'link_doutor' => $startUrl,
+                    'link_paciente' => $joinUrl,
                 ];
             }
 
             // Se falhar, retorna null
             return null;
         } catch (\Exception $e) {
-            // Em caso de erro, retorna um erro
+            \Log::error('Erro ao criar a reunião no Zoom', ['error' => $e->getMessage()]);
             return null;
         }
     }
+
 
 }

@@ -30,8 +30,10 @@
                                         </div>
                                     </div>
 
-                                    <!-- Link para exibir os slots desse serviço -->
-                                    <a href="{{ route('paciente.servicos.slots', $servico->id) }}" class="btn btn-primary btn-sm mt-2 w-100">Ver Disponibilidade</a>
+                                    <!-- Botão para exibir os horários disponíveis -->
+                                    <a href="{{ route('paciente.servicos_slots', $servico->id) }}" class="btn btn-primary btn-sm mt-2 w-100">
+                                        Ver Disponibilidade
+                                    </a>
                                 </li>
                             @endforeach
                         </ul>

@@ -11,7 +11,7 @@
                 <div class="card-body">
                     <h2 class="card-title">Minhas consultas</h2>
                     <p class="card-text">Veja suas consultas</p>
-                    <a href="{{ route('doutor.servicos') }}" class="btn btn-primary btn-custom">Ver Sessões</a>
+                    <a href="{{ route('doutor.consultas') }}" class="btn btn-primary btn-custom">Ver Sessões</a>
                 </div>
             </div>
         </div>
@@ -21,7 +21,7 @@
                 <div class="card-body">
                     <h2 class="card-title">Pacientes</h2>
                     <p class="card-text">Veja seus pacientes</p>
-                    <a href="{{ route('doutor.pacientes') }}" class="btn btn-primary btn-custom">Ver Pacientes</a>
+                    <a href="" class="btn btn-primary btn-custom">Ver Pacientes</a>
                 </div>
             </div>
         </div>

@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
-use Proner\Cpf; // Certifique-se de que o pacote está importado
+use Proner\Cpf; 
+use Laravel\Fortify\Contracts\ResetPasswordViewResponse as ResetPasswordViewResponseContract;
+use App\Responses\ResetPasswordViewResponse;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +29,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(ResetPasswordViewResponseContract::class, ResetPasswordViewResponse::class);
     }
 }

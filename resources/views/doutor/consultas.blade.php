@@ -1,4 +1,4 @@
-@extends('layouts.app_paciente')
+@extends('layouts.app_doutor')
 
 @section('content')
 <div class="container mt-5">
@@ -12,7 +12,7 @@
                 <thead class="thead-dark">
                     <tr>
                         <th>Data e Hora</th>
-                        <th>Doutor</th>
+                        <th>Paciente</th>
                         <th>Anotações</th>
                         <th>Ações</th>
                     </tr>
@@ -21,12 +21,13 @@
                     @foreach($consultas as $consulta)
                         <tr>
                             <td>{{ \Carbon\Carbon::parse($consulta->data_hora)->format('d/m/Y H:i') }}</td>
-                            <td>{{ $consulta->doutor->nome ?? 'Doutor não encontrado' }}</td>
+                            <td>{{ $consulta->paciente->nome ?? 'Paciente não encontrado' }}</td>
                             <td>{{ $consulta->anotacao ?? 'Nenhuma anotação' }}</td>
                             <td>
-                                <a href="{{ $consulta->link_paciente }}" class="btn btn-success" target="_blank">
+                                <a href="{{ $consulta->link_doutor }}" class="btn btn-primary" target="_blank">
                                     Iniciar Videochamada
                                 </a>
+                               
                             </td>
                         </tr>
                     @endforeach
@@ -36,6 +37,41 @@
     @endif
 </div>
 
-<!-- Adicionando estilos personalizados -->
+<style>
+    .table {
+        margin-top: 20px;
+        background-color: #f8f9fa;
+    }
 
+    .table th, .table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+    }
+</style>
 @endsection

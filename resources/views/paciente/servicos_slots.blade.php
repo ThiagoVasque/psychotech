@@ -3,31 +3,53 @@
 @section('content')
 <div class="container">
     <h1 class="mb-4 text-center">Disponibilidade do Serviço: {{ $servico->titulo }}</h1>
+    <p class="text-center text-muted mb-4">{{ $servico->descricao }}</p>
 
-    <h4>Escolha um horário:</h4>
-    <div class="list-group">
-        @foreach ($slots as $slot)
-            <div class="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                    <p><strong>Data:</strong> {{ \Carbon\Carbon::parse($slot->data_hora)->format('d/m/Y') }}</p>
-                    <p><strong>Horário:</strong> {{ \Carbon\Carbon::parse($slot->data_hora)->format('H:i') }} -
-                        {{ \Carbon\Carbon::parse($slot->data_hora)->addMinutes(30)->format('H:i') }}
-                    </p>
-                </div>
-
-                <form action="{{ route('paciente.servicos.agendar', ['servico' => $servico->id, 'slotId' => $slot->id]) }}"
-                    method="POST">
-                    @csrf
-                    <input type="hidden" name="doutor_cpf" value="{{ $doutor->cpf }}">
-                    <input type="hidden" name="paciente_cpf" value="{{ Auth::user()->cpf }}">
-                    <button type="submit" class="btn btn-primary">Agendar</button>
-                </form>
-            </div>
-        @endforeach
+    <div class="card mb-4">
+        <div class="card-body">
+            <p><strong>Preço:</strong> R$ {{ number_format($servico->preco, 2, ',', '.') }}</p>
+            <p><strong>Doutor:</strong> {{ $doutor->nome }} | <strong>Especialidade:</strong> {{ $doutor->especialidade }}</p>
+        </div>
     </div>
 
     @if ($slots->isEmpty())
-        <p class="text-center">Não há slots disponíveis para este serviço.</p>
+        <div class="alert alert-info text-center">
+            Não há horários disponíveis para este serviço no momento.
+        </div>
+    @else
+        <h4 class="mb-3">Selecione uma data e horário:</h4>
+        <div class="list-group">
+            @foreach ($slots->groupBy(function ($slot) {
+                return \Carbon\Carbon::parse($slot->data_hora)->format('d/m/Y');
+            }) as $data => $horarios)
+                <div class="list-group-item">
+                    <h5 class="mb-3">{{ $data }}</h5>
+                    <div class="row">
+                        @foreach ($horarios as $slot)
+                            <div class="col-md-4 mb-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <p><strong>Horário:</strong></p>
+                                        <p>{{ \Carbon\Carbon::parse($slot->data_hora)->format('H:i') }} - {{ \Carbon\Carbon::parse($slot->data_hora)->addMinutes(30)->format('H:i') }}</p>
+                                        <form action="{{ route('paciente.servicos.agendar', ['servico' => $servico->id, 'slotId' => $slot->id]) }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="doutor_cpf" value="{{ $doutor->cpf }}">
+                                            <input type="hidden" name="paciente_cpf" value="{{ Auth::guard('paciente')->user()->cpf }}">
+                                            
+                                            <div class="mb-2">
+                                                <textarea name="anotacao" class="form-control" rows="2" placeholder="Adicione uma observação (opcional)"></textarea>
+                                            </div>
+                                            
+                                            <button type="submit" class="btn btn-success btn-sm">Agendar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endforeach
+        </div>
     @endif
 </div>
 @endsection
