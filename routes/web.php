@@ -2,6 +2,7 @@
 
 use Laravel\Fortify\Fortify;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\ForgotPasswordController; // Importação adicionada
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\DoutorController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DiarioController;
 use App\Http\Controllers\DoutorServicoController;
 use App\Http\Controllers\PacienteServicoController;
+use App\Http\Controllers\ConsultaController;
 use App\Http\Controllers\ConsultaController;
 
 // Ignora as rotas padrão do Fortify
@@ -22,6 +24,10 @@ require __DIR__ . '/fortify.php';
 Route::get('/', function () {
     return view('home');
 })->name('home');
+
+// Rotas de Recuperação de Senha
+Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 
 // Rotas de Autenticação
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -48,7 +54,7 @@ Route::prefix('paciente')->middleware('auth:paciente')->group(function () {
     Route::post('/servicos/{servico}/agendar/{slotId}', [PacienteServicoController::class, 'agendar'])->name('paciente.servicos.agendar');
     Route::get('/servicos/{servico}/slots', [PacienteServicoController::class, 'exibirSlots'])->name('paciente.servicos.slots');
 
-    //Rota de anotações
+    // Rota de anotações
     Route::get('/diario', [DiarioController::class, 'index'])->name('paciente.diario');
     Route::post('/diario', [DiarioController::class, 'store'])->name('paciente.storeDiario');
     Route::put('/diario/{id}', [DiarioController::class, 'update'])->name('paciente.updateDiario');

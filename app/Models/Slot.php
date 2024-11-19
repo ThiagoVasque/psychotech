@@ -13,6 +13,7 @@ class Slot extends Model
         'doutor_servico_id', 'data_hora', 'disponivel', 'paciente_cpf'
     ];
 
+    // Desabilitar o update automático do campo `updated_at`
     public $timestamps = false;
 
     // Relacionamento com DoutorServico

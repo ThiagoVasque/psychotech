@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\Doutor;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Doutor;
 use App\Models\DoutorServico;
 use Illuminate\Http\Request;
 use App\Models\Slot;
