@@ -12,6 +12,7 @@ class CreatePacientesTable extends Migration
             $table->string('cpf')->primary();
             $table->string('nome');
             $table->date('data_nascimento');
+            $table->string('foto_perfil')->nullable(); 
             $table->string('cep');
             $table->string('bairro');
             $table->string('logradouro');

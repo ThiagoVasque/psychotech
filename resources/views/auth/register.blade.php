@@ -65,6 +65,20 @@
             padding: 10px 20px;
         }
 
+        .progress-bar {
+            transition: width 0.5s;
+            position: relative;
+        }
+
+        .progress-bar span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+        }
+
         /* Ajustes de Responsividade */
         @media (max-width: 768px) {
             .card-header {
@@ -117,7 +131,8 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('register') }}" id="registrationForm">
+                    <form method="POST" action="{{ route('register') }}" id="registrationForm"
+                        enctype="multipart/form-data">
                         @csrf
 
                         <!-- Informações Pessoais -->
@@ -139,6 +154,13 @@
                                     placeholder="Digite seu CRM">
                             </div>
 
+                            <div class="form-group" id="especialidadeField"
+                                style="display: {{ old('role') == 'doutor' ? 'block' : 'none' }};">
+                                <label for="especialidade">Especialidade</label>
+                                <input type="text" name="especialidade" id="especialidade" class="form-control"
+                                    value="{{ old('especialidade') }}" placeholder="Digite sua especialidade">
+                            </div>
+
                             <div class="form-group">
                                 <label for="cpf">CPF</label>
                                 <input type="text" name="cpf" id="cpf" class="form-control" required
@@ -154,6 +176,7 @@
                                 <input type="text" name="data_nascimento" id="data_nascimento" class="form-control"
                                     required value="{{ old('data_nascimento') }}" placeholder="Dia/Mês/Ano">
                             </div>
+
                         </div>
 
                         <!-- Endereço -->
@@ -197,6 +220,12 @@
 
                         <!-- Email e Senha (Última Etapa) -->
                         <div class="step" id="step3">
+                            <!-- Campo de Foto de Perfil -->
+                            <div class="form-group">
+                                <label for="foto_perfil">Foto de Perfil</label>
+                                <input type="file" name="foto_perfil" id="foto_perfil" class="form-control"
+                                    accept="image/*">
+                            </div>
                             <div class="form-group">
                                 <label for="telefone">Telefone</label>
                                 <input type="text" name="telefone" id="telefone" class="form-control" required
@@ -217,25 +246,31 @@
                                 <input type="password" name="password_confirmation" id="password_confirmation"
                                     class="form-control" required placeholder="Confirme sua senha">
                             </div>
-
-                            <!-- Exibindo os erros nesta etapa -->
-                            @if ($errors->any())
-                                <div class="alert alert-danger">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
+                            <!-- Barra de Força da Senha -->
+                            <div class="progress mb-3">
+                                <div class="progress-bar progress-bar-striped" id="passwordStrengthBar"
+                                    role="progressbar" style="width: 0%">
+                                    <span id="passwordStrengthText"></span>
                                 </div>
-                            @endif
+                            </div>
                         </div>
 
+                        <!-- Exibindo os erros nesta etapa -->
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
                         <div class="form-navigation">
-                            <button type="button" class="btn btn-secondary" id="prevBtn"
-                                style="display: none;">Anterior</button>
-                            <button type="button" class="btn btn-primary" id="nextBtn">Próximo</button>
-                            <button type="submit" class="btn btn-primary" style="display: none;"
-                                id="submitBtn">Registrar</button>
+                            <button type="button" class="btn btn-secondary" id="prevButton">Anterior</button>
+                            <button type="button" class="btn btn-primary" id="nextButton">Próximo</button>
+                            <button type="submit" class="btn btn-success" id="submitButton"
+                                style="display:none;">Cadastrar</button>
                         </div>
                     </form>
                 </div>
@@ -244,26 +279,53 @@
     </div>
 
     <script>
-
-
         $(document).ready(function () {
-            // Máscaras para campos
-            $("#cpf").mask("000.000.000-00");
-            $("#data_nascimento").mask("00/00/0000");
-            $("#telefone").mask("(00) 00000-0000");
-            $("#cep").mask("00000-000");
+            // Máscara para CPF e outros campos
+            $('#cpf').mask('000.000.000-00');
+            $('#data_nascimento').mask('00/00/0000');
+            $('#cep').mask('00000-000');
+            $('#telefone').mask('(00) 00000-0000');
 
-            // Adicionar máscara para o campo de CRM
-            $("#crm").mask("00000-AA");
+            // Lógica da senha e barra de progresso
+            $('#password').on('input', function () {
+                var password = $(this).val();
+                var strength = 0;
 
-            // Exibir campo de CRM apenas para o perfil "Doutor"
-            $('#role').change(function () {
-                if ($(this).val() == 'doutor') {
-                    $('#crmField').show();
-                } else {
-                    $('#crmField').hide();
-                    $('#crm').val(''); // Limpa o campo CRM quando ocultado
+                // Verificando a força da senha
+                if (password.length >= 6) strength += 1;
+                if (/[A-Z]/.test(password)) strength += 1;
+                if (/[0-9]/.test(password)) strength += 1;
+                if (/[^A-Za-z0-9]/.test(password)) strength += 1;  // Verificando caractere especial
+
+                // Atualizando a barra de progresso
+                var strengthText = '';
+                var strengthPercentage = 0;
+
+                switch (strength) {
+                    case 0:
+                        strengthText = '';
+                        strengthPercentage = 0;
+                        break;
+                    case 1:
+                        strengthText = 'Fraca';
+                        strengthPercentage = 25;
+                        break;
+                    case 2:
+                        strengthText = 'Moderada';
+                        strengthPercentage = 50;
+                        break;
+                    case 3:
+                        strengthText = 'Forte';
+                        strengthPercentage = 75;
+                        break;
+                    case 4:
+                        strengthText = 'Muito Forte';
+                        strengthPercentage = 100;
+                        break;
                 }
+
+                $('#passwordStrengthBar').css('width', strengthPercentage + '%');
+                $('#passwordStrengthText').text(strengthText);
             });
 
             // Função para buscar o endereço via CEP
@@ -285,36 +347,57 @@
                 }
             });
 
-            // Controles de navegação
-            let currentStep = 1;
-            const totalSteps = $(".step").length;
+            // Lógica para mostrar ou ocultar os campos CRM e Especialidade baseado no perfil
+            $('#role').change(function () {
+                var selectedRole = $(this).val();
 
-            $("#nextBtn").click(function () {
+                if (selectedRole === 'doutor') {
+                    $('#crmField').show();
+                    $('#especialidadeField').show();
+                    $('#crm').prop('disabled', false); // Ativa o campo CRM
+                    $('#especialidade').prop('disabled', false); // Ativa o campo Especialidade
+                } else {
+                    $('#crmField').hide();
+                    $('#especialidadeField').hide();
+                    $('#crm').prop('disabled', true); // Desativa o campo CRM
+                    $('#especialidade').prop('disabled', true); // Desativa o campo Especialidade
+                }
+            });
+
+            // Definindo o valor inicial do perfil
+            $('#role').trigger('change');
+
+            // Navegação entre os passos
+            var currentStep = 1;
+            var totalSteps = 3;
+
+            function showStep(step) {
+                $('.step').removeClass('active');
+                $('#step' + step).addClass('active');
+                $('#prevButton').toggle(step > 1);
+                $('#nextButton').toggle(step < totalSteps);
+                $('#submitButton').toggle(step === totalSteps);
+            }
+
+            $('#nextButton').click(function () {
                 if (currentStep < totalSteps) {
                     currentStep++;
-                    showStep();
+                    showStep(currentStep);
                 }
             });
 
-            $("#prevBtn").click(function () {
+            $('#prevButton').click(function () {
                 if (currentStep > 1) {
                     currentStep--;
-                    showStep();
+                    showStep(currentStep);
                 }
             });
 
-            function showStep() {
-                $(".step").removeClass("active").hide();
-                $("#step" + currentStep).addClass("active").show();
-                $("#prevBtn").toggle(currentStep > 1);
-                $("#nextBtn").toggle(currentStep < totalSteps);
-                $("#submitBtn").toggle(currentStep === totalSteps);
-            }
+            showStep(currentStep);
         });
-
 
     </script>
 
 </body>
 
-</html>
+</html>''

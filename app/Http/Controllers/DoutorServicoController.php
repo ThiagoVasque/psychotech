@@ -119,35 +119,35 @@ class DoutorServicoController extends Controller
     public function edit($id)
     {
         $servico = DoutorServico::findOrFail($id);
-        return response()->json($servico);
+        return view('doutor.servicos', compact('servico'));
     }
 
-    // Atualizar serviço
     public function update(Request $request, $id)
     {
+        $servico = DoutorServico::findOrFail($id);
+
+        // Validação
         $validated = $request->validate([
             'titulo' => 'required|string|max:255',
             'descricao' => 'nullable|string',
             'preco' => 'required|numeric',
+            'especialidade' => 'nullable|string',
             'periodos' => 'required|array',
-            'periodos.*.datas' => 'required|string',
-            'periodos.*.hora_inicio' => 'required|date_format:H:i',
-            'periodos.*.hora_fim' => 'required|date_format:H:i|after:periodos.*.hora_inicio',
         ]);
 
-        $servico = DoutorServico::findOrFail($id);
-        $servico->update($validated);
+        // Atualizando os dados
+        $servico->update([
+            'titulo' => $validated['titulo'],
+            'descricao' => $validated['descricao'],
+            'preco' => $validated['preco'],
+            'especialidade' => $validated['especialidade'],
+            'periodos' => json_encode($validated['periodos']),
+        ]);
 
-        // Limpar os slots antigos
-        $servico->slots()->delete();
-
-        // Regenerar os slots com base nos novos dados
-        foreach ($validated['periodos'] as $periodo) {
-            $this->gerarSlotsPorPeriodo($servico, $periodo);
-        }
-
-        return redirect()->route('doutor.servicos');
+        // Redirecionamento ou retorno
+        return redirect()->route('doutor.servicos')->with('success', 'Serviço atualizado com sucesso!');
     }
+
 
     public function destroy($id)
     {
@@ -156,7 +156,7 @@ class DoutorServicoController extends Controller
             $servico = DoutorServico::findOrFail($id);
 
             // Excluindo os slots relacionados a este serviço
-            $servico->slots()->delete();  
+            $servico->slots()->delete();
 
             // Agora exclui o serviço
             $servico->delete();

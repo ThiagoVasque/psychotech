@@ -48,12 +48,6 @@
         vertical-align: middle;
     }
 
-    .btn {
-        width: 100%;
-        padding: 10px;
-        font-size: 16px;
-    }
-
     .btn-primary {
         background-color: #007bff;
         border-color: #007bff;

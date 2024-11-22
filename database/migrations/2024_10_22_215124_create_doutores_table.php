@@ -13,6 +13,8 @@ class CreateDoutoresTable extends Migration
             $table->string('crm')->unique();
             $table->string('nome');
             $table->date('data_nascimento');
+            $table->string('especialidade');  
+            $table->string('foto_perfil')->nullable(); 
             $table->string('cep');
             $table->string('bairro');
             $table->string('logradouro');

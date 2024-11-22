@@ -46,6 +46,7 @@ class RegisterController extends Controller
                     }
                 }
             ],
+            'especialidade' => 'nullable|string|max:255',
             'bairro' => 'required|string|max:255',
             'logradouro' => 'required|string|max:255',
             'numero' => 'required|string|max:255',
@@ -54,13 +55,23 @@ class RegisterController extends Controller
             'estado' => 'required|string|max:2',
             'telefone' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:pacientes,email|unique:doutores,email',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/[A-Z]/', 
+                'regex:/[a-z]/', 
+                'regex:/[0-9]/',
+                'regex:/[@$!%*?&]/', 
+            ],
             'crm' => [
                 'nullable',
                 Rule::unique('doutores', 'crm')->where(function ($query) use ($request) {
                     return $request->role === 'doutor';
                 }),
             ],
+            'foto_perfil' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', 
         ]);
 
         // Se a validação falhar, retornamos com erros
@@ -72,6 +83,7 @@ class RegisterController extends Controller
         // Convertendo data de nascimento para o formato do banco
         $dataNascimento = Carbon::createFromFormat('d/m/Y', $request->data_nascimento)->format('Y-m-d');
 
+        // Dados a serem salvos no banco
         $data = $request->only([
             'nome',
             'cep',
@@ -90,9 +102,17 @@ class RegisterController extends Controller
 
         // Adicionando CPF, data de nascimento e senha ao array de dados
         $data['cpf'] = $cpf;
+        $data['especialidade'] = $request->especialidade;
         $data['data_nascimento'] = $dataNascimento;
         $data['password'] = Hash::make($request->password);
         $data['role'] = $request->role; // Adicionando o campo role
+
+        // Verifica se há uma foto de perfil e salva
+        if ($request->hasFile('foto_perfil') && $request->file('foto_perfil')->isValid()) {
+            $fotoPerfil = $request->file('foto_perfil');
+            $fotoPerfilPath = $fotoPerfil->store('fotos_perfil', 'public'); // Salvando a foto na pasta 'storage/app/public/fotos_perfil'
+            $data['foto_perfil'] = $fotoPerfilPath;
+        }
 
         // Verifica a role do usuário e cria o registro nas tabelas corretas
         try {

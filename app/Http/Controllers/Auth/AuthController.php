@@ -10,9 +10,6 @@ use App\Models\Doutor;
 use App\Models\Paciente;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
-use Google_Client;
-use Google_Service_Calendar;
-use Google_Service_Oauth2;
 use Illuminate\Support\Str;
 
 class AuthController extends Controller

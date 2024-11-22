@@ -9,22 +9,28 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    @stack('styles') 
+    @stack('styles')
 </head>
 
 <body>
-    <div class="d-flex">
+    <div class="d-flex" style="min-height: 100vh;">
         <!-- Sidebar -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light flex-column"
-            style="width: 250px; height: 100vh; position: fixed; overflow-y: auto; box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);">
+            style="width: 250px; height: 100%; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);">
+
             <div class="text-center mb-4 mt-3">
                 <h5>Olá Dr(a)</h5>
-                @if(auth()->check())
+                @auth
+                    <div class="mb-2">
+                        <!-- Foto de Perfil -->
+                        <img src="{{ asset('storage/' . auth()->user()->foto_perfil) }}" alt="Foto de Perfil"
+                            class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
+                    </div>
                     <h3>{{ auth()->user()->nome }}</h3>
                     <small class="text-muted">{{ ucfirst(auth()->user()->role) }}</small>
                 @else
                     <h3>Usuário não autenticado</h3>
-                @endif
+                @endauth
             </div>
 
             <ul class="navbar-nav flex-column">
@@ -50,10 +56,17 @@
                 </li>
             </ul>
 
-            <div class="text-center mb-4 mt-3">
+            <!-- Botões de Gerenciamento e Logout abaixo do sidebar -->
+            <div class="mt-auto text-center mb-4">
+                <!-- Botão de Configurações (Engrenagem) -->
+                <a href="" class="btn btn-primary btn-sm mb-2 w-100">
+                    <i class="fas fa-cogs"></i> Gerenciar Perfil
+                </a>
+
+                <!-- Botão de Logout -->
                 <a href="{{ route('logout') }}"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                    class="btn btn-danger btn-sm">
+                    class="btn btn-danger btn-sm w-100">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -62,37 +75,22 @@
             </div>
         </nav>
 
-        <!-- Main -->
-        <div class="container" style="margin-left: 250px; padding-top: 20px; margin-bottom: 60px;">
+        <!-- Main Content -->
+        <div class="container" style="margin-left: 250px; padding-top: 20px; padding-bottom: 80px;">
             <div class="content">
                 @yield('content')
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="text-white text-center"
-        style="background-color: #821AD1; position: fixed; bottom: 0; width: 100%; z-index: 1000;">
-        <div class="container">
-            <p class="mb-1">Conecte-se com a gente:</p>
-            <a href="https://www.instagram.com/guico_felipe_/?igsh=MXJkZGdoNjl0ankycg%3D%3D" class="text-white mx-2"><i
-                    class="fab fa-instagram"></i></a>
-            <a href="https://www.instagram.com/thiagonvasque/?igsh=MTBjaW5naXpjMW95MQ%3D%3D" class="text-white mx-2"><i
-                    class="fab fa-instagram"></i></a>
-            <a href="https://github.com/ThiagoVasque/psychotech" class="text-white mx-2"><i
-                    class="fab fa-github"></i></a>
-        </div>
-        <div class="text-center">
-            <p class="mb-0">© 2024 PsychoTech. Todos os direitos reservados.</p>
-        </div>
-    </footer>
-
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    @stack('scripts') 
+    @stack('scripts')
     <script src="{{ asset('js/app.js') }}"></script>
+
 </body>
 
 </html>

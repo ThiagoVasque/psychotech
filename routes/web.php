@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PacienteRelatorioController;
 use Laravel\Fortify\Fortify;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -52,12 +53,11 @@ Route::prefix('paciente')->middleware('auth:paciente')->group(function () {
     Route::post('/consultas/agendar/{slot}', [PacienteServicoController::class, 'agendar'])->name('paciente.consulta.agendar');
 
     // Histórico de Consultas
-    Route::get('/historico', [PacienteController::class, 'historico'])->name('paciente.historico');
+    Route::get('/historico', [PacienteRelatorioController::class, 'index'])->name('paciente.historico');
 
     // Serviços de Doutores
     Route::get('/servicos', [PacienteServicoController::class, 'index'])->name('paciente.servicos');
     Route::post('/servicos/{servico}/agendar/{slotId}', [PacienteServicoController::class, 'agendar'])->name('paciente.servicos.agendar');
-
     Route::get('/servicos/{servico}/slots', [PacienteServicoController::class, 'exibirSlots'])->name('paciente.servicos_slots');
 
     // Diário do Paciente
@@ -81,6 +81,10 @@ Route::prefix('doutor')->middleware('auth:doutor')->group(function () {
     Route::get('/servicos', [DoutorServicoController::class, 'index'])->name('doutor.servicos');
     Route::get('/servicos/create', [DoutorServicoController::class, 'create'])->name('doutor.servicos.create');
     Route::post('/servicos', [DoutorServicoController::class, 'store'])->name('doutor.servicos.store');
+    Route::get('/servicos/{servico}/edit', [DoutorServicoController::class, 'edit'])->name('doutor.servicos.edit');  // Rota de edição
     Route::put('/servicos/{servico}', [DoutorServicoController::class, 'update'])->name('doutor.servicos.update');
+
+
     Route::delete('/servicos/{servico}', [DoutorServicoController::class, 'destroy'])->name('doutor.servicos.destroy');
 });
+

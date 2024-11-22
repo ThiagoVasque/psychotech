@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class DiarioController extends Controller
 {
-    // Exibir a lista de anotações
     public function index()
     {
         // Pega todas as anotações do paciente autenticado
