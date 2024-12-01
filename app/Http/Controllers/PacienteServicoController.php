@@ -20,9 +20,29 @@ class PacienteServicoController extends Controller
     }
 
     // Método para exibir os serviços dos doutores
-    public function index()
+    public function index(Request $request)
     {
-        $doutores = Doutor::with('servicos')->get();
+        $titulo = $request->input('titulo'); // Obter o título do serviço
+
+        // Filtrar doutores com base no título do serviço, se o filtro for informado
+        $doutores = Doutor::whereHas('servicos', function ($query) use ($titulo) {
+            if ($titulo) {
+                $query->where('titulo', 'like', '%' . $titulo . '%');
+            }
+        })->get();
+
+        return view('paciente.servicos', compact('doutores'));
+    }
+    public function listaDoutores(Request $request)
+    {
+        $titulo = $request->input('titulo'); // Obter o título do serviço
+
+        // Filtrar doutores com base no título do serviço, se o filtro for informado
+        $doutores = Doutor::whereHas('servicos', function ($query) use ($titulo) {
+            if ($titulo) {
+                $query->where('titulo', 'like', '%' . $titulo . '%');
+            }
+        })->get();
 
         return view('paciente.servicos', compact('doutores'));
     }
@@ -30,6 +50,9 @@ class PacienteServicoController extends Controller
     // Método para exibir os slots de um serviço
     public function exibirSlots(DoutorServico $servico)
     {
+        // Excluir slots com horários passados
+        Slot::where('data_hora', '<', now())->delete();
+
         // Obter os slots disponíveis para o serviço
         $slots = $servico->slots()->where('disponivel', true)->get();
 
@@ -37,6 +60,7 @@ class PacienteServicoController extends Controller
 
         return view('paciente.servicos_slots', compact('servico', 'slots', 'doutor'));
     }
+
 
     // Método para agendar o serviço
     public function agendar(Request $request, $servicoId, $slotId)
@@ -65,7 +89,8 @@ class PacienteServicoController extends Controller
             $consulta->link_doutor = $linksZoom['link_doutor'];
             $consulta->link_paciente = $linksZoom['link_paciente'];
             $consulta->status = 'pendente';
-            $consulta->anotacao = $request->input('anotacao'); 
+            $consulta->anotacao = $request->input('anotacao');
+            $consulta->valor = $servico->preco; // Adiciona o valor do serviço
             $consulta->save();
 
             return redirect()->route('paciente.consultas')->with('success', 'Consulta agendada com sucesso!');
@@ -73,6 +98,8 @@ class PacienteServicoController extends Controller
             return back()->with('error', 'Falha ao gerar o link do Zoom.');
         }
     }
+
+
 
     private function gerarLinkZoom($dataHora, $doutorCpf, $pacienteCpf)
     {

@@ -19,18 +19,30 @@
                 </thead>
                 <tbody>
                     @foreach($consultas as $consulta)
-                        <tr>
-                            <td>{{ \Carbon\Carbon::parse($consulta->data_hora)->format('d/m/Y H:i') }}</td>
-                            <td>{{ $consulta->paciente->nome ?? 'Paciente não encontrado' }}</td>
-                            <td>{{ $consulta->anotacao ?? 'Nenhuma anotação' }}</td>
-                            <td>
-                                <a href="{{ $consulta->link_doutor }}" class="btn btn-primary" target="_blank">
-                                    Iniciar Videochamada
-                                </a>
-                               
-                            </td>
-                        </tr>
+                                <tr
+                                    class="{{ \Carbon\Carbon::parse($consulta->data_hora)->addHours(2)->isPast() ? 'text-muted' : '' }}">
+                                    <td>{{ \Carbon\Carbon::parse($consulta->data_hora)->format('d/m/Y H:i') }}</td>
+                                    <td>{{ $consulta->paciente->nome ?? 'Paciente não encontrado' }}</td>
+                                    <td>{{ $consulta->anotacao ?? 'Nenhuma anotação' }}</td>
+                                    <td>
+                                        @php
+                                            $agora = \Carbon\Carbon::now();
+                                            $dataConsulta = \Carbon\Carbon::parse($consulta->data_hora);
+                                        @endphp
+
+                                        @if($dataConsulta->lte($agora)) {{-- Verifica se a consulta já está liberada --}}
+                                            <a href="{{ $consulta->link_doutor }}" class="btn btn-primary" target="_blank">
+                                                Iniciar Videochamada
+                                            </a>
+                                        @else
+                                            <button class="btn btn-secondary" disabled>
+                                                Aguardando Horário
+                                            </button>
+                                        @endif
+                                    </td>
+                                </tr>
                     @endforeach
+
                 </tbody>
             </table>
         </div>
@@ -43,7 +55,8 @@
         background-color: #f8f9fa;
     }
 
-    .table th, .table td {
+    .table th,
+    .table td {
         text-align: center;
         vertical-align: middle;
     }

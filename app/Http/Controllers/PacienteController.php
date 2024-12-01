@@ -16,6 +16,11 @@ class PacienteController extends Controller
         return view('paciente.home');
     }
 
+    public function gerencia()
+    {
+        return view('paciente.gerencia_perfil');
+    }
+
     // Método para exibir sessões agendadas
     public function consultas()
     {

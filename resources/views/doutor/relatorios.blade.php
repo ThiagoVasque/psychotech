@@ -7,13 +7,15 @@
     <form action="{{ route('doutor.relatorios') }}" method="GET" class="mb-4">
         <div class="form-group">
             <label for="nome">Nome do Paciente</label>
-            <input type="text" class="form-control" id="nome" name="nome" value="{{ request('nome') }}" placeholder="Digite o nome do paciente">
+            <input type="text" class="form-control" id="nome" name="nome" value="{{ request('nome') }}"
+                placeholder="Digite o nome do paciente">
         </div>
 
         <div class="form-group d-flex align-items-center">
             <div>
                 <label for="data_inicio">Data Início</label>
-                <input type="date" class="form-control" id="data_inicio" name="data_inicio" value="{{ request('data_inicio') }}">
+                <input type="date" class="form-control" id="data_inicio" name="data_inicio"
+                    value="{{ request('data_inicio') }}">
             </div>
 
             <div class="mx-2 mt-4">
@@ -37,6 +39,7 @@
                 <th>Nome</th>
                 <th>Idade</th>
                 <th>Data da Consulta</th>
+                <th>Valor (R$)</th>
                 <th>Observações</th>
             </tr>
         </thead>
@@ -46,11 +49,15 @@
                     <td>{{ $consulta->paciente->nome }}</td>
                     <td>{{ \Carbon\Carbon::parse($consulta->paciente->data_nascimento)->age }} anos</td>
                     <td>{{ \Carbon\Carbon::parse($consulta->data_hora)->format('d/m/Y H:i') }}</td>
+                    <td>
+                        {{ number_format($consulta->valor, 2, ',', '.') }}
+                    </td>
+
                     <td>{{ $consulta->anotacao }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="4" class="text-center">Nenhum resultado encontrado</td>
+                    <td colspan="5" class="text-center">Nenhum resultado encontrado</td>
                 </tr>
             @endforelse
         </tbody>

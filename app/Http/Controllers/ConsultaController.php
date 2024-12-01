@@ -25,10 +25,26 @@ class ConsultaController extends Controller
             return redirect()->route('login')->withErrors('Você precisa estar autenticado como paciente.');
         }
 
-        $consultas = Consulta::where('paciente_cpf', $paciente->cpf)->get();
+        // Recupera todas as consultas do paciente
+        $consultas = Consulta::where('paciente_cpf', $paciente->cpf)
+            ->with('doutor') // Carrega a relação com o doutor
+            ->get();
+
+        // Atualiza status de consultas que já passaram de 2 horas
+        foreach ($consultas as $consulta) {
+            if ($consulta->status !== 'desabilitado' && \Carbon\Carbon::parse($consulta->data_hora)->addHours(2)->isPast()) {
+                $consulta->status = 'desabilitado';
+                $consulta->save();
+            }
+        }
+
+        // Filtra consultas que não estão desabilitadas
+        $consultas = $consultas->where('status', '!=', 'desabilitado');
 
         return view('paciente.consultas', compact('consultas'));
     }
+
+
 
     public function agendar(Request $request, $slotId)
     {
@@ -42,7 +58,7 @@ class ConsultaController extends Controller
             'doutor_cpf' => 'required|exists:doutores,cpf',
             'paciente_cpf' => 'required|exists:pacientes,cpf',
             'data_hora' => 'required|date',
-            'anotacao' => 'nullable|string|max:500', 
+            'anotacao' => 'nullable|string|max:500',
         ]);
 
         $slot = Slot::findOrFail($slotId);

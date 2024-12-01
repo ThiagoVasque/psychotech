@@ -21,7 +21,7 @@
         <div class="list-group">
             @foreach ($slots->groupBy(function ($slot) {
                 return \Carbon\Carbon::parse($slot->data_hora)->format('d/m/Y');
-            }) as $data => $horarios)
+            })->sortKeys() as $data => $horarios)
                 <div class="list-group-item">
                     <h5 class="mb-3">{{ $data }}</h5>
                     <div class="row">

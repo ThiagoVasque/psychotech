@@ -19,7 +19,6 @@ use App\Http\Controllers\DoutorRelatorioController;
 Fortify::ignoreRoutes();
 
 // Carrega as rotas do Fortify
-require __DIR__ . '/fortify.php';
 
 // Rota inicial
 Route::get('/', function () {
@@ -30,10 +29,12 @@ Route::get('/', function () {
 Route::prefix('password')->name('password.')->group(function () {
     Route::get('forgot', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('request');
     Route::post('forgot', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('email');
-    Route::get('password/reset/{token}', function ($token) {
-        return view('auth.password-reset', ['token' => $token]);
-    })->name('password.reset');
-    Route::post('reset', [ForgotPasswordController::class, 'reset'])->name('update');
+    Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+
+
+
+    Route::post('reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update');
+
 });
 
 // Rotas de Autenticação
@@ -47,6 +48,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::prefix('paciente')->middleware('auth:paciente')->group(function () {
     // Home do Paciente
     Route::get('/', [PacienteController::class, 'home'])->name('paciente.home');
+
+    Route::get('/perfil', [PacienteController::class, 'gerencia'])->name('paciente.gerencia_perfil');
 
     // Consultas do Paciente
     Route::get('/consultas', [ConsultaController::class, 'index'])->name('paciente.consultas');
@@ -81,8 +84,8 @@ Route::prefix('doutor')->middleware('auth:doutor')->group(function () {
     Route::get('/servicos', [DoutorServicoController::class, 'index'])->name('doutor.servicos');
     Route::get('/servicos/create', [DoutorServicoController::class, 'create'])->name('doutor.servicos.create');
     Route::post('/servicos', [DoutorServicoController::class, 'store'])->name('doutor.servicos.store');
-    Route::get('/servicos/{servico}/edit', [DoutorServicoController::class, 'edit'])->name('doutor.servicos.edit');  // Rota de edição
-    Route::put('/servicos/{servico}', [DoutorServicoController::class, 'update'])->name('doutor.servicos.update');
+    Route::get('/servicos/{servico}/edit', [DoutorServicoController::class, 'edit'])->name('doutor.servicos.edit');
+    Route::put('/servicos/{id}', [DoutorServicoController::class, 'update'])->name('doutor.servicos.update');
 
 
     Route::delete('/servicos/{servico}', [DoutorServicoController::class, 'destroy'])->name('doutor.servicos.destroy');

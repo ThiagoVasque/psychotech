@@ -17,21 +17,20 @@
                             <h5 class="card-title">{{ $servico->titulo }}</h5>
                             <p class="card-text">{{ Str::limit($servico->descricao, 80) }}</p>
                             <ul class="list-unstyled">
-                                <li><strong>Especialidade:</strong> {{ $servico->especialidade }}</li>
                                 <li><strong>Preço:</strong> R$ {{ number_format($servico->preco, 2, ',', '.') }}</li>
                                 @foreach(json_decode($servico->periodos) as $periodo)
-                                    <li><strong>Data:</strong> {{ $periodo->datas }} </li>
+                                    <li><strong>Data:</strong> {{ $periodo->datas }}</li>
                                     <li><strong>Horário:</strong> {{ $periodo->hora_inicio }} até {{ $periodo->hora_fim }}</li>
                                 @endforeach
                             </ul>
-                            <!-- editar e excluir -->
-                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editarServicoModal"
-                                data-id="{{ $servico->id }}" data-titulo="{{ $servico->titulo }}"
-                                data-descricao="{{ $servico->descricao }}" data-preco="{{ $servico->preco }}"
-                                data-especialidade="{{ $servico->especialidade }}"
-                                data-periodos="{{ json_encode($servico->periodos) }}">
+                            <!-- Botões de editar e excluir -->
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#editarServicoModal-{{ $servico->id }}" data-id="{{ $servico->id }}"
+                                data-titulo="{{ $servico->titulo }}" data-descricao="{{ $servico->descricao }}"
+                                data-preco="{{ $servico->preco }}" data-periodos='@json(json_decode($servico->periodos))'>
                                 <i class="bi bi-pencil"></i> Editar
                             </button>
+
                             <form action="{{ route('doutor.servicos.destroy', $servico->id) }}" method="POST"
                                 style="display:inline;">
                                 @csrf
@@ -88,10 +87,17 @@
                                     <input type="time" name="periodos[0][hora_inicio]" class="form-control mt-2"
                                         required>
                                     <input type="time" name="periodos[0][hora_fim]" class="form-control mt-2" required>
+                                    <button type="button" class="btn btn-danger btn-sm mt-2 remover-periodo">Excluir
+                                        Período</button>
                                 </div>
                             </div>
                             <button type="button" id="adicionarPeriodo" class="btn btn-link">Adicionar Período</button>
+
                         </div>
+
+                        @error('periodos.*.datas')
+                            <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
 
                         <button type="submit" class="btn btn-primary w-100">Salvar Serviço</button>
                     </form>
@@ -101,116 +107,129 @@
     </div>
 
     <!-- Modal para Editar Serviço -->
-    <!-- Modal para Editar Serviço -->
     @foreach($servicos as $servico)
-        <div class="modal fade" id="editarServicoModal{{ $servico->id }}" tabindex="-1"
-            aria-labelledby="editarServicoModalLabel{{ $servico->id }}" aria-hidden="true">
+        <div class="modal fade" id="editarServicoModal-{{ $servico->id }}" tabindex="-1"
+            aria-labelledby="editarServicoModalLabel-{{ $servico->id }}" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editarServicoModalLabel{{ $servico->id }}">Editar Serviço</h5>
+                        <h5 class="modal-title" id="editarServicoModalLabel-{{ $servico->id }}">Editar Serviço</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="editarServicoForm{{ $servico->id }}" method="POST"
-                            action="{{ route('doutor.servicos.update', $servico->id) }}">
+                        <form action="{{ route('doutor.servicos.update', $servico->id) }}" method="POST"
+                            id="editarServicoForm-{{ $servico->id }}">
                             @csrf
                             @method('PUT')
-                            <input type="text" name="titulo" value="{{ $servico->titulo }}" required>
-                            <input type="text" name="descricao" value="{{ $servico->descricao }}" required>
-                            <input type="number" name="preco" value="{{ $servico->preco }}" required>
-                            <button type="submit" class="btn btn-primary">Salvar</button>
+
+                            <div class="form-group mb-3">
+                                <label for="titulo">Título do Serviço</label>
+                                <input type="text" name="titulo" id="titulo-{{ $servico->id }}" class="form-control"
+                                    value="{{ $servico->titulo }}" required>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="descricao">Descrição</label>
+                                <textarea name="descricao" id="descricao-{{ $servico->id }}" class="form-control"
+                                    rows="3">{{ $servico->descricao }}</textarea>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="preco">Preço</label>
+                                <input type="number" name="preco" id="preco-{{ $servico->id }}" class="form-control"
+                                    value="{{ $servico->preco }}" required>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="periodos">Períodos de Atendimento</label>
+                                <div id="periodos-{{ $servico->id }}">
+                                    @foreach(json_decode($servico->periodos) as $index => $periodo)
+                                        <div class="periodo mb-3" id="periodo-{{ $index }}">
+                                            <label for="datas-{{ $index }}">Intervalo de Datas</label>
+                                            <input type="text" id="datas-{{ $index }}" name="periodos[{{ $index }}][datas]"
+                                                class="form-control flatpickr" value="{{ $periodo->datas }}" required readonly>
+                                            <input type="time" name="periodos[{{ $index }}][hora_inicio]"
+                                                class="form-control mt-2" value="{{ $periodo->hora_inicio }}" required>
+                                            <input type="time" name="periodos[{{ $index }}][hora_fim]" class="form-control mt-2"
+                                                value="{{ $periodo->hora_fim }}" required>
+                                            <button type="button" class="btn btn-danger btn-sm mt-2 remover-periodo">Excluir
+                                                Período</button>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <button type="button" id="adicionarPeriodo-{{ $servico->id }}"
+                                    class="btn btn-link">Adicionar Período</button>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">Salvar Alterações</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     @endforeach
+</div>
 
-    @endsection
+@endsection
 
-    @push('scripts')
-        <!-- sistema do calendario-->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Inicializar flatpickr para os campos de data
+            flatpickr('.flatpickr', {
+                mode: 'range',
+                dateFormat: 'd/m/Y',
+                locale: 'pt'
+            });
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                // Inicializa o flatpickr nos campos de datas
-                flatpickr(".flatpickr", {
-                    mode: "range",
-                    dateFormat: "d/m/Y",
-                    locale: "pt",
-                    minDate: "today", // valida datas passadas
+            // Função para adicionar período no modal de criação e edição
+            function adicionarPeriodo(servicoId = null) {
+                const periodoIndex = servicoId ? `${servicoId}-${document.querySelectorAll(`#periodos-${servicoId} .periodo`).length}` : document.querySelectorAll('#periodos .periodo').length;
+                const container = servicoId ? document.getElementById(`periodos-${servicoId}`) : document.getElementById('periodos');
+
+                const novoPeriodoHTML = `
+                    <div class="periodo mb-3" id="periodo-${periodoIndex}">
+                        <label for="datas-${periodoIndex}">Selecione o Intervalo de Datas</label>
+                        <input type="text" id="datas-${periodoIndex}" name="periodos[${periodoIndex}][datas]" class="form-control flatpickr" placeholder="Selecione as datas" required readonly>
+                        <input type="time" name="periodos[${periodoIndex}][hora_inicio]" class="form-control mt-2" required>
+                        <input type="time" name="periodos[${periodoIndex}][hora_fim]" class="form-control mt-2" required>
+                        <button type="button" class="btn btn-danger btn-sm mt-2 remover-periodo">Excluir Período</button>
+                    </div>
+                `;
+
+                container.insertAdjacentHTML('beforeend', novoPeriodoHTML);
+                flatpickr(`#datas-${periodoIndex}`, {
+                    mode: 'range',
+                    dateFormat: 'd/m/Y',
+                    locale: 'pt'
                 });
+            }
 
-                // Lógica de edição de serviço
-                editarModal.addEventListener('show.bs.modal', function (event) {
-                    const button = event.relatedTarget; // Botão que acionou o modal
-                    const id = button.getAttribute('data-id');
-                    const titulo = button.getAttribute('data-titulo');
-                    const descricao = button.getAttribute('data-descricao');
-                    const preco = button.getAttribute('data-preco');
-                    const especialidade = button.getAttribute('data-especialidade');
-                    const periodos = JSON.parse(button.getAttribute('data-periodos'));
+            // Função para remover período
+            function removerPeriodo(event) {
+                const periodoElement = event.target.closest('.periodo');
+                periodoElement.remove();
+            }
 
-                    // Preenchendo os campos do modal
-                    document.getElementById('servicoId').value = id;
-                    document.getElementById('editarTitulo').value = titulo;
-                    document.getElementById('editarDescricao').value = descricao;
-                    document.getElementById('editarPreco').value = preco;
+            // Evento para adicionar período na tela de criação
+            document.getElementById('adicionarPeriodo').addEventListener('click', function () {
+                adicionarPeriodo();
+            });
 
-                    // Adicionando os períodos
-                    let periodosHTML = '';
-                    periodos.forEach((periodo, index) => {
-                        periodosHTML += `
-                        <div class="periodo mb-3" id="periodo-${index}">
-                            <label for="datas-${index}">Intervalo de Datas</label>
-                            <input type="text" name="periodos[${index}][datas]" id="datas-${index}" class="form-control flatpickr" value="${periodo.datas}" readonly>
-                            <input type="time" name="periodos[${index}][hora_inicio]" class="form-control mt-2" value="${periodo.hora_inicio}">
-                            <input type="time" name="periodos[${index}][hora_fim]" class="form-control mt-2" value="${periodo.hora_fim}">
-                        </div>`;
-                    });
-
-                    document.getElementById('editarPeriodos').innerHTML = periodosHTML;
-
-                    // Reaplicando o flatpickr nos novos campos de data
-                    periodos.forEach((_, index) => {
-                        flatpickr(`#datas-${index}`, {
-                            mode: "range",
-                            dateFormat: "d/m/Y",
-                            locale: "pt",
-                            minDate: "today", // valida datas passadas
-                        });
-                    });
-                });
-
-                // Lógica para adicionar períodos dinamicamente
-                let periodoIndex = 1; // Inicia o índice para o novo período
-                const adicionarPeriodoButton = document.getElementById('adicionarPeriodo');
-                adicionarPeriodoButton.addEventListener('click', function () {
-                    const novoPeriodoHTML = `
-                                    <div class="periodo mb-3" id="periodo-${periodoIndex}">
-                                        <label for="datas-${periodoIndex}">Intervalo de Datas</label>
-                                        <input type="text" name="periodos[${periodoIndex}][datas]" id="datas-${periodoIndex}" class="form-control flatpickr" placeholder="Selecione as datas" readonly>
-                                        <input type="time" name="periodos[${periodoIndex}][hora_inicio]" class="form-control mt-2">
-                                        <input type="time" name="periodos[${periodoIndex}][hora_fim]" class="form-control mt-2">
-                                    </div>`;
-
-                    // Adiciona o novo período ao container
-                    document.getElementById('periodos').insertAdjacentHTML('beforeend', novoPeriodoHTML);
-
-                    // Reaplica o flatpickr no novo campo de data
-                    flatpickr(`#datas-${periodoIndex}`, {
-                        mode: "range",
-                        dateFormat: "d/m/Y",
-                        locale: "pt",
-                        minDate: "today",
-                    });
-
-                    periodoIndex++; // adiciona o próximo período
+            // Evento para adicionar período na tela de edição
+            document.querySelectorAll('[id^=adicionarPeriodo]').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    const servicoId = button.id.split('-')[1];
+                    adicionarPeriodo(servicoId);
                 });
             });
 
-        </script>
-    @endpush
+            // Evento para remover período
+            document.body.addEventListener('click', function (event) {
+                if (event.target.classList.contains('remover-periodo')) {
+                    removerPeriodo(event);
+                }
+            });
+        });
+    </script>
+@endpush

@@ -64,7 +64,7 @@
             <!-- Botões de Gerenciamento e Logout abaixo do sidebar -->
             <div class="mt-auto text-center mb-4">
                 <!-- Botão de Configurações (Engrenagem) -->
-                <a href="" class="btn btn-primary btn-sm mb-2 w-100">
+                <a href="{{route('paciente.gerencia_perfil')}}" class="btn btn-primary btn-sm mb-2 w-100">
                     <i class="fas fa-cogs"></i> Gerenciar Perfil
                 </a>
 

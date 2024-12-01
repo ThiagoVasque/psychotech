@@ -131,21 +131,117 @@ class DoutorServicoController extends Controller
             'titulo' => 'required|string|max:255',
             'descricao' => 'nullable|string',
             'preco' => 'required|numeric',
-            'especialidade' => 'nullable|string',
             'periodos' => 'required|array',
         ]);
 
-        // Atualizando os dados
+        // Salvando os períodos enviados
+        $novos_periodos = $validated['periodos'];
+
+        // Recupera os períodos antigos (do banco de dados)
+        $periodos_antigos = json_decode($servico->periodos, true);
+
+        // Excluindo os slots de períodos removidos
+        foreach ($periodos_antigos as $periodo_antigo) {
+            $existe_no_novo_periodo = false;
+
+            foreach ($novos_periodos as $periodo_novo) {
+                if (
+                    $periodo_novo['datas'] === $periodo_antigo['datas'] &&
+                    $periodo_novo['hora_inicio'] === $periodo_antigo['hora_inicio'] &&
+                    $periodo_novo['hora_fim'] === $periodo_antigo['hora_fim']
+                ) {
+                    $existe_no_novo_periodo = true;
+                    break;
+                }
+            }
+
+            if (!$existe_no_novo_periodo) {
+                // Se o período foi removido, exclua os slots relacionados a ele
+                $this->removerSlotsPorPeriodo($servico, $periodo_antigo);
+            }
+        }
+
+        // Atualizando o serviço
         $servico->update([
             'titulo' => $validated['titulo'],
             'descricao' => $validated['descricao'],
             'preco' => $validated['preco'],
-            'especialidade' => $validated['especialidade'],
-            'periodos' => json_encode($validated['periodos']),
+            'periodos' => json_encode($novos_periodos),
         ]);
 
-        // Redirecionamento ou retorno
+        // Excluir todos os slots antes de gerar os novos
+        $this->removerTodosSlots($servico);
+
+        // Gerar os slots para os períodos restantes (que foram adicionados ou modificados)
+        foreach ($novos_periodos as $periodo) {
+            $this->gerarSlotsPorPeriodo($servico, $periodo);
+        }
+
         return redirect()->route('doutor.servicos')->with('success', 'Serviço atualizado com sucesso!');
+    }
+
+
+    public function removerTodosSlots(DoutorServico $servico)
+    {
+        // Remove todos os slots relacionados a esse serviço
+        Slot::where('doutor_servico_id', $servico->id)->delete();
+    }
+
+
+
+    public function removerSlotsPorPeriodo(DoutorServico $servico, $periodo)
+    {
+        // Verifica se o formato das datas está correto
+        $datas = explode(" to ", $periodo['datas']);
+
+        if (count($datas) === 1) {
+            // Caso haja apenas uma data, a data_inicio e data_fim serão iguais
+            $data_inicio = Carbon::createFromFormat('d/m/Y', $datas[0]);
+            $data_fim = $data_inicio;  // A data final será igual à inicial
+        } elseif (count($datas) === 2) {
+            // Caso haja o intervalo de duas datas, atribui as duas datas corretamente
+            $data_inicio = Carbon::createFromFormat('d/m/Y', $datas[0]);
+            $data_fim = Carbon::createFromFormat('d/m/Y', $datas[1]);
+        } else {
+            throw new \Exception('Formato de datas inválido. A string deve conter "data_inicio" ou "data_inicio to data_fim".');
+        }
+
+        // Hora de início e fim
+        $hora_inicio = Carbon::createFromFormat('H:i', $periodo['hora_inicio']);
+        $hora_fim = Carbon::createFromFormat('H:i', $periodo['hora_fim']);
+
+        // Loop para excluir os slots de cada dia no intervalo
+        $data_atual = $data_inicio;
+        while ($data_atual <= $data_fim) {
+            // Para cada novo dia, resetar a hora de início para o valor inicial do período
+            $hora_atual_inicio = $hora_inicio->copy();
+            $hora_atual_fim = $hora_fim->copy();
+
+            // Excluir os slots para o dia atual
+            $this->excluirSlotsPorDia($servico, $data_atual, $hora_atual_inicio, $hora_atual_fim);
+
+            // Avança para o próximo dia
+            if ($data_atual < $data_fim) {
+                $data_atual->addDay();
+            } else {
+                break;  // Se a data atual for igual à data final, finaliza o loop
+            }
+        }
+    }
+
+    public function excluirSlotsPorDia(DoutorServico $servico, Carbon $data_dia, Carbon $hora_inicio, Carbon $hora_fim)
+    {
+        // Loop para excluir os slots de 30 minutos entre hora_inicio e hora_fim
+        while ($hora_inicio < $hora_fim) {
+            // Exclui o slot para o dia atual
+            Slot::where('doutor_servico_id', $servico->id)
+                ->whereDate('data_hora', $data_dia->toDateString())
+                ->whereTime('data_hora', $hora_inicio->toTimeString())
+                ->delete();
+
+            // Avança 30 minutos
+            $hora_inicio->addMinutes(30);
+        }
     }
 
 

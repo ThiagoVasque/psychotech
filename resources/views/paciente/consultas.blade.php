@@ -19,14 +19,26 @@
                 </thead>
                 <tbody>
                     @foreach($consultas as $consulta)
-                        <tr>
+                        <tr class="{{ \Carbon\Carbon::parse($consulta->data_hora)->addHours(2)->isPast() ? 'text-muted' : '' }}">
                             <td>{{ \Carbon\Carbon::parse($consulta->data_hora)->format('d/m/Y H:i') }}</td>
                             <td>{{ $consulta->doutor->nome ?? 'Doutor não encontrado' }}</td>
                             <td>{{ $consulta->anotacao ?? 'Nenhuma anotação' }}</td>
                             <td>
-                                <a href="{{ $consulta->link_paciente }}" class="btn btn-success" target="_blank">
-                                    Iniciar Videochamada
-                                </a>
+                                @php
+                                    $agora = \Carbon\Carbon::now();
+                                    $dataConsulta = \Carbon\Carbon::parse($consulta->data_hora);
+                                @endphp
+
+                                @if($dataConsulta->lte($agora))
+                                    {{-- Verifica se a consulta já está liberada --}}
+                                    <a href="{{ $consulta->link_paciente }}" class="btn btn-primary" target="_blank">
+                                        Iniciar Videochamada
+                                    </a>
+                                @else
+                                    <button class="btn btn-secondary" disabled>
+                                        Aguardando Horário
+                                    </button>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
@@ -35,7 +47,4 @@
         </div>
     @endif
 </div>
-
-<!-- Adicionando estilos personalizados -->
-
 @endsection

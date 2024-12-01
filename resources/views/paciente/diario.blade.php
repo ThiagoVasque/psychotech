@@ -10,7 +10,7 @@
 
     <!-- Botão para abrir o modal de adicionar nova anotação -->
     <div class="text-center mb-4">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addAnotacaoModal">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAnotacaoModal">
             Nova Anotação
         </button>
     </div>
@@ -25,8 +25,8 @@
 
                 <div class="d-flex justify-content-between">
                     <!-- Botão para abrir o modal de edição -->
-                    <button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
-                        data-target="#editAnotacaoModal{{ $anotacao->id }}">
+                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#editAnotacaoModal{{ $anotacao->id }}">
                         Editar
                     </button>
 
@@ -43,15 +43,13 @@
         </div>
 
         <!-- Modal de edição -->
-        <div class="modal fade" id="editAnotacaoModal{{ $anotacao->id }}" tabindex="-1" role="dialog"
+        <div class="modal fade" id="editAnotacaoModal{{ $anotacao->id }}" tabindex="-1"
             aria-labelledby="editAnotacaoModalLabel{{ $anotacao->id }}" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editAnotacaoModalLabel{{ $anotacao->id }}">Editar Anotação</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form action="{{ route('paciente.updateDiario', $anotacao->id) }}" method="POST">
                         @csrf
@@ -69,14 +67,13 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                             <button type="submit" class="btn btn-primary">Atualizar</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-
     @endforeach
 </div>
 
@@ -87,9 +84,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addAnotacaoModalLabel">Nova Anotação</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ route('paciente.storeDiario') }}" method="POST">
                 @csrf
@@ -104,7 +99,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                     <button type="submit" class="btn btn-primary">Adicionar</button>
                 </div>
             </form>
@@ -112,11 +107,4 @@
     </div>
 </div>
 
-@endsection
-
-@section('scripts')
-<script>
-    $(document).ready(function () {
-    });
-</script>
 @endsection

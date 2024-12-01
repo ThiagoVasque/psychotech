@@ -17,32 +17,37 @@ class DoutorController extends Controller
     public function home()
     {
         // O usuário será automaticamente um doutor após o login
-        $doutor = Auth::user(); 
+        $doutor = Auth::user();
         return view('doutor.home', compact('doutor'));
     }
 
     public function consultas()
-{
-    // Recupera o doutor logado
-    $doutor = Auth::user(); 
+    {
+        $doutor = Auth::user();
 
-    // Recupera as consultas do doutor logado (ajuste conforme a relação entre Doutor e Consulta)
-    $consultas = Consulta::where('doutor_cpf', $doutor->cpf)->get();
+        if (!$doutor) {
+            return redirect()->route('login')->withErrors('Você precisa estar autenticado como doutor.');
+        }
 
-    // Passa as consultas para a view
-    return view('doutor.consultas', compact('consultas'));
-}
+        // Recupere as consultas do doutor
+        $consultas = Consulta::where('doutor_cpf', $doutor->cpf)->get();
+
+        // Retorne a view com a variável $consultas
+        return view('doutor.consultas', compact('consultas'));
+    }
+
+
 
 
     public function servicos()
     {
-        $doutor = Auth::user(); 
+        $doutor = Auth::user();
         return view('doutor.servicos', compact('doutor'));
     }
 
     public function relatorios()
     {
-        $doutor = Auth::user(); 
+        $doutor = Auth::user();
         return view('doutor.relatorios', compact('doutor'));
     }
 }

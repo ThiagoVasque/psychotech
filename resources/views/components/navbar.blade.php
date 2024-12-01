@@ -2,7 +2,7 @@
     <div class="container-fluid">
 
         <!-- Logo -->
-        <a class="navbar-brand text-white">Psychotech</a>
+        <a class="navbar-brand text-white" href="{{ route('home') }}">Psychotech</a>
         <a class="nav-link text-white" href="{{ route('home') }}">Inicio</a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
