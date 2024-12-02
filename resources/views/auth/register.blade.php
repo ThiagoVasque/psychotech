@@ -110,6 +110,10 @@
                 padding: 8px 15px;
             }
         }
+
+        .text-success {
+            color: green !important;
+        }
     </style>
 </head>
 
@@ -117,7 +121,6 @@
 
     <x-navbar />
 
-    <!-- Form -->
     <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
         <div class="col-12 col-md-10 col-lg-8">
             <div class="card shadow-lg border-0 rounded-lg mt-5 card-custom">
@@ -246,13 +249,15 @@
                                 <input type="password" name="password_confirmation" id="password_confirmation"
                                     class="form-control" required placeholder="Confirme sua senha">
                             </div>
-                            <!-- Barra de Força da Senha -->
-                            <div class="progress mb-3">
-                                <div class="progress-bar progress-bar-striped" id="passwordStrengthBar"
-                                    role="progressbar" style="width: 0%">
-                                    <span id="passwordStrengthText"></span>
-                                </div>
+                            <div id="passwordCriteria" class="text-muted mb-3">
+                                <ul>
+                                    <li id="lengthCriteria">Mínimo de 8 caracteres</li>
+                                    <li id="uppercaseCriteria">Pelo menos uma letra maiúscula</li>
+                                    <li id="numberCriteria">Pelo menos um número</li>
+                                    <li id="specialCharCriteria">Pelo menos um caractere especial</li>
+                                </ul>
                             </div>
+
                         </div>
 
                         <!-- Exibindo os erros nesta etapa -->
@@ -289,44 +294,20 @@
             // Lógica da senha e barra de progresso
             $('#password').on('input', function () {
                 var password = $(this).val();
-                var strength = 0;
 
-                // Verificando a força da senha
-                if (password.length >= 6) strength += 1;
-                if (/[A-Z]/.test(password)) strength += 1;
-                if (/[0-9]/.test(password)) strength += 1;
-                if (/[^A-Za-z0-9]/.test(password)) strength += 1;  // Verificando caractere especial
+                // Critérios de senha
+                var isLengthValid = password.length >= 8;
+                var hasUppercase = /[A-Z]/.test(password);
+                var hasNumber = /[0-9]/.test(password);
+                var hasSpecialChar = /[^A-Za-z0-9]/.test(password);
 
-                // Atualizando a barra de progresso
-                var strengthText = '';
-                var strengthPercentage = 0;
-
-                switch (strength) {
-                    case 0:
-                        strengthText = '';
-                        strengthPercentage = 0;
-                        break;
-                    case 1:
-                        strengthText = 'Fraca';
-                        strengthPercentage = 25;
-                        break;
-                    case 2:
-                        strengthText = 'Moderada';
-                        strengthPercentage = 50;
-                        break;
-                    case 3:
-                        strengthText = 'Forte';
-                        strengthPercentage = 75;
-                        break;
-                    case 4:
-                        strengthText = 'Muito Forte';
-                        strengthPercentage = 100;
-                        break;
-                }
-
-                $('#passwordStrengthBar').css('width', strengthPercentage + '%');
-                $('#passwordStrengthText').text(strengthText);
+                // Alterar cor das instruções com base nos critérios
+                $('#lengthCriteria').toggleClass('text-success', isLengthValid);
+                $('#uppercaseCriteria').toggleClass('text-success', hasUppercase);
+                $('#numberCriteria').toggleClass('text-success', hasNumber);
+                $('#specialCharCriteria').toggleClass('text-success', hasSpecialChar);
             });
+
 
             // Função para buscar o endereço via CEP
             $('#cep').on('blur', function () {

@@ -38,7 +38,6 @@ class DoutorController extends Controller
 
 
 
-
     public function servicos()
     {
         $doutor = Auth::user();

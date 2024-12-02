@@ -66,41 +66,101 @@
                         @csrf
                         <div class="form-group mb-3">
                             <label for="titulo">Título do Serviço</label>
-                            <input type="text" name="titulo" id="titulo" class="form-control" required>
+                            <input type="text" name="titulo" id="titulo"
+                                class="form-control @error('titulo') is-invalid @enderror" value="{{ old('titulo') }}"
+                                required>
+                            @error('titulo')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
                             <label for="descricao">Descrição</label>
-                            <textarea name="descricao" id="descricao" class="form-control" rows="3"></textarea>
+                            <textarea name="descricao" id="descricao"
+                                class="form-control @error('descricao') is-invalid @enderror"
+                                rows="3">{{ old('descricao') }}</textarea>
+                            @error('descricao')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
                             <label for="preco">Preço</label>
-                            <input type="number" name="preco" id="preco" class="form-control" required>
+                            <input type="number" name="preco" id="preco"
+                                class="form-control @error('preco') is-invalid @enderror" value="{{ old('preco') }}"
+                                required>
+                            @error('preco')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
                             <label for="periodos">Períodos de Atendimento</label>
                             <div id="periodos">
-                                <div class="periodo mb-3" id="periodo-0">
-                                    <label for="datas-0">Selecione o Intervalo de Datas</label>
-                                    <input type="text" id="datas-0" name="periodos[0][datas]"
-                                        class="form-control flatpickr" placeholder="Selecione as datas" required
-                                        readonly>
-                                    <input type="time" name="periodos[0][hora_inicio]" class="form-control mt-2"
-                                        required>
-                                    <input type="time" name="periodos[0][hora_fim]" class="form-control mt-2" required>
-                                    <button type="button" class="btn btn-danger btn-sm mt-2 remover-periodo">Excluir
-                                        Período</button>
-                                </div>
+                                @if (old('periodos'))
+                                    @foreach (old('periodos') as $index => $periodo)
+                                        <div class="periodo mb-3" id="periodo-{{ $index }}">
+                                            <label for="datas-{{ $index }}">Selecione o Intervalo de Datas</label>
+                                            <input type="text" id="datas-{{ $index }}" name="periodos[{{ $index }}][datas]"
+                                                class="form-control flatpickr @error('periodos.' . $index . '.datas') is-invalid @enderror"
+                                                value="{{ $periodo['datas'] }}" placeholder="Selecione as datas" required
+                                                readonly>
+                                            @error('periodos.' . $index . '.datas')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <input type="time" name="periodos[{{ $index }}][hora_inicio]"
+                                                class="form-control mt-2 @error('periodos.' . $index . '.hora_inicio') is-invalid @enderror"
+                                                value="{{ $periodo['hora_inicio'] }}" required>
+                                            @error('periodos.' . $index . '.hora_inicio')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <input type="time" name="periodos[{{ $index }}][hora_fim]"
+                                                class="form-control mt-2 @error('periodos.' . $index . '.hora_fim') is-invalid @enderror"
+                                                value="{{ $periodo['hora_fim'] }}" required>
+                                            @error('periodos.' . $index . '.hora_fim')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <button type="button" class="btn btn-danger btn-sm mt-2 remover-periodo">Excluir
+                                                Período</button>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="periodo mb-3" id="periodo-0">
+                                        <label for="datas-0">Selecione o Intervalo de Datas</label>
+                                        <input type="text" id="datas-0" name="periodos[0][datas]"
+                                            class="form-control flatpickr @error('periodos.0.datas') is-invalid @enderror"
+                                            value="{{ old('periodos.0.datas') }}" placeholder="Selecione as datas" required
+                                            readonly>
+                                        @error('periodos.0.datas')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <input type="time" name="periodos[0][hora_inicio]"
+                                            class="form-control mt-2 @error('periodos.0.hora_inicio') is-invalid @enderror"
+                                            value="{{ old('periodos.0.hora_inicio') }}" required>
+                                        @error('periodos.0.hora_inicio')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <input type="time" name="periodos[0][hora_fim]"
+                                            class="form-control mt-2 @error('periodos.0.hora_fim') is-invalid @enderror"
+                                            value="{{ old('periodos.0.hora_fim') }}" required>
+                                        @error('periodos.0.hora_fim')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <button type="button" class="btn btn-danger btn-sm mt-2 remover-periodo">Excluir
+                                            Período</button>
+                                    </div>
+                                @endif
                             </div>
                             <button type="button" id="adicionarPeriodo" class="btn btn-link">Adicionar Período</button>
-
                         </div>
 
-                        @error('periodos.*.datas')
-                            <div class="alert alert-danger">{{ $message }}</div>
-                        @enderror
+                        @if ($errors->has('periodos'))
+                            <div class="alert alert-danger">
+                                {{ $errors->first('periodos') }}
+                            </div>
+                        @endif
 
                         <button type="submit" class="btn btn-primary w-100">Salvar Serviço</button>
                     </form>
+
+
                 </div>
             </div>
         </div>
@@ -182,20 +242,51 @@
                 locale: 'pt'
             });
 
+            // Função para verificar se o período é válido
+            function verificarSobreposicao(servicoId = null) {
+                let periodos = [];
+                const periodoContainers = servicoId ? document.querySelectorAll(`#periodos-${servicoId} .periodo`) : document.querySelectorAll('#periodos .periodo');
+
+                periodoContainers.forEach(function (periodoElement) {
+                    const data = periodoElement.querySelector('input[name*="datas"]').value;
+                    const horaInicio = periodoElement.querySelector('input[name*="hora_inicio"]').value;
+                    const horaFim = periodoElement.querySelector('input[name*="hora_fim"]').value;
+
+                    // Aqui estamos coletando os dados para comparar com os outros períodos
+                    periodos.push({ data, horaInicio, horaFim });
+                });
+
+                // Lógica para verificar sobreposição
+                for (let i = 0; i < periodos.length; i++) {
+                    for (let j = i + 1; j < periodos.length; j++) {
+                        if (periodos[i].data === periodos[j].data) {
+                            // Verifica se os horários se sobrepõem
+                            if (
+                                (periodos[i].horaInicio < periodos[j].horaFim && periodos[i].horaFim > periodos[j].horaInicio)
+                            ) {
+                                return false; // Se sobrepõe
+                            }
+                        }
+                    }
+                }
+
+                return true; // Não há sobreposição
+            }
+
             // Função para adicionar período no modal de criação e edição
             function adicionarPeriodo(servicoId = null) {
                 const periodoIndex = servicoId ? `${servicoId}-${document.querySelectorAll(`#periodos-${servicoId} .periodo`).length}` : document.querySelectorAll('#periodos .periodo').length;
                 const container = servicoId ? document.getElementById(`periodos-${servicoId}`) : document.getElementById('periodos');
 
                 const novoPeriodoHTML = `
-                    <div class="periodo mb-3" id="periodo-${periodoIndex}">
-                        <label for="datas-${periodoIndex}">Selecione o Intervalo de Datas</label>
-                        <input type="text" id="datas-${periodoIndex}" name="periodos[${periodoIndex}][datas]" class="form-control flatpickr" placeholder="Selecione as datas" required readonly>
-                        <input type="time" name="periodos[${periodoIndex}][hora_inicio]" class="form-control mt-2" required>
-                        <input type="time" name="periodos[${periodoIndex}][hora_fim]" class="form-control mt-2" required>
-                        <button type="button" class="btn btn-danger btn-sm mt-2 remover-periodo">Excluir Período</button>
-                    </div>
-                `;
+                        <div class="periodo mb-3" id="periodo-${periodoIndex}">
+                            <label for="datas-${periodoIndex}">Selecione o Intervalo de Datas</label>
+                            <input type="text" id="datas-${periodoIndex}" name="periodos[${periodoIndex}][datas]" class="form-control flatpickr" placeholder="Selecione as datas" required readonly>
+                            <input type="time" name="periodos[${periodoIndex}][hora_inicio]" class="form-control mt-2" required>
+                            <input type="time" name="periodos[${periodoIndex}][hora_fim]" class="form-control mt-2" required>
+                            <button type="button" class="btn btn-danger btn-sm mt-2 remover-periodo">Excluir Período</button>
+                        </div>
+                    `;
 
                 container.insertAdjacentHTML('beforeend', novoPeriodoHTML);
                 flatpickr(`#datas-${periodoIndex}`, {
@@ -203,6 +294,13 @@
                     dateFormat: 'd/m/Y',
                     locale: 'pt'
                 });
+
+                // Verifica a sobreposição ao adicionar novo período
+                if (!verificarSobreposicao(servicoId)) {
+                    alert('Há sobreposição de horários. Por favor, ajuste as datas ou horários.');
+                    // Opcional: pode remover o último período adicionado se houver sobreposição
+                    document.getElementById(`periodo-${periodoIndex}`).remove();
+                }
             }
 
             // Função para remover período
@@ -231,5 +329,6 @@
                 }
             });
         });
+
     </script>
 @endpush

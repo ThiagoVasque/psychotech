@@ -29,13 +29,10 @@ Route::get('/', function () {
 Route::prefix('password')->name('password.')->group(function () {
     Route::get('forgot', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('request');
     Route::post('forgot', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('email');
-    Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
-
-
-
-    Route::post('reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update');
-
+    Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('reset');
+    Route::post('reset-password', [ForgotPasswordController::class, 'reset'])->name('update');
 });
+
 
 // Rotas de Autenticação
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');

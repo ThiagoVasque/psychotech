@@ -30,6 +30,28 @@ class DoutorServicoController extends Controller
             'periodos.*.hora_fim' => 'required|date_format:H:i|after:periodos.*.hora_inicio',
         ]);
 
+        // Verificação de períodos duplicados
+        $periodos = $request->periodos;
+
+        foreach ($periodos as $key => $periodo) {
+            foreach ($periodos as $compareKey => $comparePeriodo) {
+                // Não compara o próprio item consigo mesmo
+                if ($key != $compareKey) {
+                    // Verifica se a data, hora de início e hora de fim são iguais
+                    if (
+                        $periodo['datas'] === $comparePeriodo['datas'] &&
+                        $periodo['hora_inicio'] === $comparePeriodo['hora_inicio'] &&
+                        $periodo['hora_fim'] === $comparePeriodo['hora_fim']
+                    ) {
+                        // Adiciona o erro de duplicação na coleção de erros
+                        return redirect()->back()
+                            ->withInput()
+                            ->withErrors(['periodos' => 'Não é permitido cadastrar períodos duplicados.']);
+                    }
+                }
+            }
+        }
+
         // Processar os períodos antes de salvar
         $periodos = array_map(function ($periodo) {
             return [
@@ -55,6 +77,7 @@ class DoutorServicoController extends Controller
 
         return redirect()->route('doutor.servicos');
     }
+
 
     public function gerarSlotsPorPeriodo($servico, $periodo)
     {
@@ -84,10 +107,22 @@ class DoutorServicoController extends Controller
             $hora_atual_inicio = $hora_inicio->copy();
             $hora_atual_fim = $hora_fim->copy();
 
+            // Verifica se já existe um slot para esse horário e data
+            $existe_slot = Slot::where('doutor_servico_id', $servico->id)
+                ->whereDate('data_hora', $data_atual->toDateString())
+                ->whereTime('data_hora', $hora_atual_inicio->toTimeString())
+                ->exists();
+
+            if ($existe_slot) {
+                // Se o slot já existir, retorna com uma mensagem de erro
+                return redirect()->route('doutor.servicos')
+                    ->with('error', 'Já existe um horário disponível nessa data e horário.');
+            }
+
             // Gera os slots para o dia atual
             $this->criarSlotsPorDia($servico, $data_atual, $hora_atual_inicio, $hora_atual_fim);
 
-            // Avança para o próximo dia, mas só se a data final for maior que a data atual
+            // Avança para o próximo dia
             if ($data_atual < $data_fim) {
                 $data_atual->addDay();
             } else {
@@ -95,6 +130,7 @@ class DoutorServicoController extends Controller
             }
         }
     }
+
 
 
 
