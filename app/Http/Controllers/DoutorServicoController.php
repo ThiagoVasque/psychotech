@@ -12,7 +12,7 @@ class DoutorServicoController extends Controller
     // Listar os serviços
     public function index()
     {
-        $servicos = DoutorServico::all();
+        $servicos = DoutorServico::where('doutor_cpf', auth()->user()->cpf)->get();
         return view('doutor.servicos', compact('servicos'));
     }
 
@@ -85,11 +85,9 @@ class DoutorServicoController extends Controller
         $datas = explode(" to ", $periodo['datas']);
 
         if (count($datas) === 1) {
-            // Caso haja apenas uma data, a data_inicio e data_fim serão iguais
             $data_inicio = Carbon::createFromFormat('d/m/Y', $datas[0]);
-            $data_fim = $data_inicio;  // A data final será igual à inicial
+            $data_fim = $data_inicio;
         } elseif (count($datas) === 2) {
-            // Caso haja o intervalo de duas datas, atribui as duas datas corretamente
             $data_inicio = Carbon::createFromFormat('d/m/Y', $datas[0]);
             $data_fim = Carbon::createFromFormat('d/m/Y', $datas[1]);
         } else {
@@ -100,36 +98,33 @@ class DoutorServicoController extends Controller
         $hora_inicio = Carbon::createFromFormat('H:i', $periodo['hora_inicio']);
         $hora_fim = Carbon::createFromFormat('H:i', $periodo['hora_fim']);
 
-        // Loop para gerar os slots de cada dia no intervalo
         $data_atual = $data_inicio;
         while ($data_atual <= $data_fim) {
-            // Para cada novo dia, resetar a hora de início para o valor inicial do período
             $hora_atual_inicio = $hora_inicio->copy();
             $hora_atual_fim = $hora_fim->copy();
 
-            // Verifica se já existe um slot para esse horário e data
-            $existe_slot = Slot::where('doutor_servico_id', $servico->id)
+            // Verifica se já existe um slot para o doutor atual
+            $existe_slot = Slot::where('doutor_servico_id', $servico->id) // Verifica apenas para o doutor atual
                 ->whereDate('data_hora', $data_atual->toDateString())
                 ->whereTime('data_hora', $hora_atual_inicio->toTimeString())
                 ->exists();
 
             if ($existe_slot) {
-                // Se o slot já existir, retorna com uma mensagem de erro
                 return redirect()->route('doutor.servicos')
-                    ->with('error', 'Já existe um horário disponível nessa data e horário.');
+                    ->with('error', 'Já existe um horário disponível para esse serviço nesse dia e horário.');
             }
 
-            // Gera os slots para o dia atual
+            // Criar os slots para esse dia
             $this->criarSlotsPorDia($servico, $data_atual, $hora_atual_inicio, $hora_atual_fim);
 
-            // Avança para o próximo dia
             if ($data_atual < $data_fim) {
                 $data_atual->addDay();
             } else {
-                break;  // Se a data atual for igual à data final, finaliza o loop
+                break;
             }
         }
     }
+
 
 
 
@@ -227,43 +222,36 @@ class DoutorServicoController extends Controller
 
     public function removerSlotsPorPeriodo(DoutorServico $servico, $periodo)
     {
-        // Verifica se o formato das datas está correto
         $datas = explode(" to ", $periodo['datas']);
 
         if (count($datas) === 1) {
-            // Caso haja apenas uma data, a data_inicio e data_fim serão iguais
             $data_inicio = Carbon::createFromFormat('d/m/Y', $datas[0]);
-            $data_fim = $data_inicio;  // A data final será igual à inicial
+            $data_fim = $data_inicio;
         } elseif (count($datas) === 2) {
-            // Caso haja o intervalo de duas datas, atribui as duas datas corretamente
             $data_inicio = Carbon::createFromFormat('d/m/Y', $datas[0]);
             $data_fim = Carbon::createFromFormat('d/m/Y', $datas[1]);
         } else {
             throw new \Exception('Formato de datas inválido. A string deve conter "data_inicio" ou "data_inicio to data_fim".');
         }
 
-        // Hora de início e fim
         $hora_inicio = Carbon::createFromFormat('H:i', $periodo['hora_inicio']);
         $hora_fim = Carbon::createFromFormat('H:i', $periodo['hora_fim']);
 
-        // Loop para excluir os slots de cada dia no intervalo
         $data_atual = $data_inicio;
         while ($data_atual <= $data_fim) {
-            // Para cada novo dia, resetar a hora de início para o valor inicial do período
             $hora_atual_inicio = $hora_inicio->copy();
             $hora_atual_fim = $hora_fim->copy();
 
-            // Excluir os slots para o dia atual
             $this->excluirSlotsPorDia($servico, $data_atual, $hora_atual_inicio, $hora_atual_fim);
 
-            // Avança para o próximo dia
             if ($data_atual < $data_fim) {
                 $data_atual->addDay();
             } else {
-                break;  // Se a data atual for igual à data final, finaliza o loop
+                break;
             }
         }
     }
+
 
     public function excluirSlotsPorDia(DoutorServico $servico, Carbon $data_dia, Carbon $hora_inicio, Carbon $hora_fim)
     {

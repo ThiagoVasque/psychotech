@@ -22,6 +22,11 @@ class Slot extends Model
         return $this->belongsTo(DoutorServico::class);
     }
 
+    public function servico()
+    {
+        return $this->belongsTo(DoutorServico::class, 'doutor_servico_id');
+    }
+
     // Relacionamento com Paciente
     public function paciente()
     {
