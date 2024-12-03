@@ -9,7 +9,11 @@ class PacienteRelatorioController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Consulta::query();
+        // Obtém o paciente logado
+        $paciente = auth()->user();
+
+        // Inicia a consulta filtrando pelo paciente
+        $query = Consulta::where('paciente_cpf', $paciente->cpf);
 
         // Filtro por nome do doutor
         if ($request->has('nome') && $request->nome) {
@@ -33,4 +37,5 @@ class PacienteRelatorioController extends Controller
         // Retornar a view com os dados
         return view('paciente.historico', compact('consultas'));
     }
+
 }

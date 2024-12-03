@@ -27,8 +27,9 @@ class ConsultaController extends Controller
 
         // Recupera todas as consultas do paciente
         $consultas = Consulta::where('paciente_cpf', $paciente->cpf)
-            ->with('doutor') // Carrega a relação com o doutor
-            ->get();
+        ->with('doutorServico') // Carrega a relação com o doutorServico
+        ->get();
+    
 
         // Atualiza status de consultas que já passaram de 2 horas
         foreach ($consultas as $consulta) {

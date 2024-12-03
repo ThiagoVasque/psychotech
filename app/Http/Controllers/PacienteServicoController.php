@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use App\Models\Slot;
 use App\Models\Consulta;
 use App\Services\ZoomService;
+use Illuminate\Support\Facades\Log;
+
 
 class PacienteServicoController extends Controller
 {
@@ -22,29 +24,27 @@ class PacienteServicoController extends Controller
     // Método para exibir os serviços dos doutores
     public function index(Request $request)
     {
-        $titulo = $request->input('titulo'); // Obter o título do serviço
+        $titulo = $request->input('titulo');
+        $especialidade = $request->input('especialidade');
 
-        // Filtrar doutores com base no título do serviço, se o filtro for informado
-        $doutores = Doutor::whereHas('servicos', function ($query) use ($titulo) {
-            if ($titulo) {
-                $query->where('titulo', 'like', '%' . $titulo . '%');
-            }
-        })->get();
+        // Filtrando os doutores e serviços
+        $doutores = Doutor::with('servicos')
+            ->when($titulo, function ($query, $titulo) {
+                $query->whereHas('servicos', function ($q) use ($titulo) {
+                    $q->where('titulo', 'like', "%{$titulo}%");
+                });
+            })
+            ->when($especialidade, function ($query, $especialidade) {
+                $query->where('especialidade', $especialidade);
+            })
+            ->get();
 
-        return view('paciente.servicos', compact('doutores'));
-    }
-    public function listaDoutores(Request $request)
-    {
-        $titulo = $request->input('titulo'); // Obter o título do serviço
+        // Recupera a lista de especialidades únicas, mas apenas dos doutores que possuem serviços
+        $especialidades = Doutor::whereHas('servicos') // Apenas doutores com serviços
+            ->pluck('especialidade') // Pluck das especialidades
+            ->unique(); // Retorna as especialidades únicas
 
-        // Filtrar doutores com base no título do serviço, se o filtro for informado
-        $doutores = Doutor::whereHas('servicos', function ($query) use ($titulo) {
-            if ($titulo) {
-                $query->where('titulo', 'like', '%' . $titulo . '%');
-            }
-        })->get();
-
-        return view('paciente.servicos', compact('doutores'));
+        return view('paciente.servicos', compact('doutores', 'especialidades'));
     }
 
     // Método para exibir os slots de um serviço
@@ -56,11 +56,15 @@ class PacienteServicoController extends Controller
         // Obter os slots disponíveis para o serviço
         $slots = $servico->slots()->where('disponivel', true)->get();
 
+        // Verificar se há slots disponíveis
+        if ($slots->isEmpty()) {
+            return back()->with('error', 'Não há slots disponíveis para este serviço.');
+        }
+
         $doutor = Doutor::where('cpf', $servico->doutor_cpf)->first();
 
         return view('paciente.servicos_slots', compact('servico', 'slots', 'doutor'));
     }
-
 
     // Método para agendar o serviço
     public function agendar(Request $request, $servicoId, $slotId)
@@ -71,6 +75,24 @@ class PacienteServicoController extends Controller
         // Verificar se o slot está disponível
         if (!$slot->disponivel) {
             return back()->with('error', 'Esse horário já foi agendado.');
+        }
+
+        // Obter a data e hora do slot e converter para o formato correto
+        $slotDataHora = \Carbon\Carbon::parse($slot->data_hora)->format('Y-m-d H:i:s');
+
+        // Verificar se o paciente já tem uma consulta agendada para o mesmo horário com qualquer doutor
+        $consultaExistente = Consulta::where('paciente_cpf', $request->input('paciente_cpf'))
+            ->where('data_hora', $slotDataHora) // Comparando a data e hora exatas
+            ->exists();
+
+        \Log::info('Verificação de agendamento:', [
+            'paciente_cpf' => $request->input('paciente_cpf'),
+            'slot_data_hora' => $slotDataHora,
+            'consulta_existente' => $consultaExistente,
+        ]);
+
+        if ($consultaExistente) {
+            return back()->with('error', 'Você já tem uma consulta marcada para este horário.');
         }
 
         // Marcar o slot como ocupado
@@ -98,6 +120,7 @@ class PacienteServicoController extends Controller
             return back()->with('error', 'Falha ao gerar o link do Zoom.');
         }
     }
+
 
 
 
@@ -150,6 +173,4 @@ class PacienteServicoController extends Controller
             return null;
         }
     }
-
-
 }

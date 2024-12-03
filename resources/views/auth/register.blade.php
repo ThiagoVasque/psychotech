@@ -291,6 +291,22 @@
             $('#cep').mask('00000-000');
             $('#telefone').mask('(00) 00000-0000');
 
+
+            var crmInput = $('#crm');
+            crmInput.on('input', function () {
+                var value = $(this).val().toUpperCase(); // Converte para maiúsculas
+                // Remove caracteres não alfanuméricos e limita a 8 caracteres
+                value = value.replace(/[^A-Za-z0-9]/g, '').slice(0, 7); // Limita a 8 caracteres
+
+                // Adiciona o hífen após os 6 primeiros caracteres
+                if (value.length > 5) {
+                    value = value.slice(0, 5) + '-' + value.slice(5, 8);
+                }
+
+                $(this).val(value);
+            });
+
+
             // Lógica da senha e barra de progresso
             $('#password').on('input', function () {
                 var password = $(this).val();

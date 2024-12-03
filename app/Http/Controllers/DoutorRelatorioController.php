@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Consulta;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 class DoutorRelatorioController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Consulta::query();
+        // Obtém o doutor logado
+        $doutor = Auth::user();
+
+        // Inicia a consulta filtrando pelo doutor
+        $query = Consulta::where('doutor_cpf', $doutor->cpf);
 
         // Filtro por nome do paciente
         if ($request->has('nome') && $request->nome) {
@@ -30,7 +34,12 @@ class DoutorRelatorioController extends Controller
         // Obter as consultas filtradas
         $consultas = $query->get();
 
+        // Calcular o total
+        $total = $consultas->sum('valor');
+
         // Retornar a view com os dados
-        return view('doutor.relatorios', compact('consultas'));
+        return view('doutor.relatorios', compact('consultas', 'total'));
     }
+
+
 }

@@ -36,7 +36,7 @@
     <table class="table table-striped table-bordered">
         <thead class="thead-dark">
             <tr>
-                <th>Nome</th>
+                <th>Paciente</th>
                 <th>Idade</th>
                 <th>Data da Consulta</th>
                 <th>Valor (R$)</th>
@@ -62,5 +62,11 @@
             @endforelse
         </tbody>
     </table>
+
+    @if($consultas->isNotEmpty())
+        <div class="mt-3">
+            <strong>Total: R$ {{ number_format($total, 2, ',', '.') }}</strong>
+        </div>
+    @endif
 </div>
 @endsection

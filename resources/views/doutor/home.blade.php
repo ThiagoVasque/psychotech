@@ -19,9 +19,9 @@
         <div class="col-md-4">
             <div class="card card-custom text-center mb-4 shadow-sm">
                 <div class="card-body">
-                    <h2 class="card-title">Pacientes</h2>
-                    <p class="card-text">Veja seus pacientes</p>
-                    <a href="" class="btn btn-primary btn-custom">Ver Pacientes</a>
+                    <h2 class="card-title">Meus serviços</h2>
+                    <p class="card-text">Veja seus serviços</p>
+                    <a href="{{ route('doutor.servicos')}}" class="btn btn-primary btn-custom">Ver Serviços</a>
                 </div>
             </div>
         </div>

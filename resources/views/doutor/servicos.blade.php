@@ -233,14 +233,27 @@
 @endsection
 
 @push('scripts')
+
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Inicializar flatpickr para os campos de data
             flatpickr('.flatpickr', {
                 mode: 'range',
                 dateFormat: 'd/m/Y',
-                locale: 'pt'
+                locale: {
+                    firstDayOfWeek: 1, // Semana começa na segunda-feira
+                    weekdays: {
+                        shorthand: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+                        longhand: ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'],
+                    },
+                    months: {
+                        shorthand: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                        longhand: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                    },
+                }
             });
+
 
             // Função para verificar se o período é válido
             function verificarSobreposicao(servicoId = null) {
@@ -279,14 +292,14 @@
                 const container = servicoId ? document.getElementById(`periodos-${servicoId}`) : document.getElementById('periodos');
 
                 const novoPeriodoHTML = `
-                        <div class="periodo mb-3" id="periodo-${periodoIndex}">
-                            <label for="datas-${periodoIndex}">Selecione o Intervalo de Datas</label>
-                            <input type="text" id="datas-${periodoIndex}" name="periodos[${periodoIndex}][datas]" class="form-control flatpickr" placeholder="Selecione as datas" required readonly>
-                            <input type="time" name="periodos[${periodoIndex}][hora_inicio]" class="form-control mt-2" required>
-                            <input type="time" name="periodos[${periodoIndex}][hora_fim]" class="form-control mt-2" required>
-                            <button type="button" class="btn btn-danger btn-sm mt-2 remover-periodo">Excluir Período</button>
-                        </div>
-                    `;
+                                <div class="periodo mb-3" id="periodo-${periodoIndex}">
+                                    <label for="datas-${periodoIndex}">Selecione o Intervalo de Datas</label>
+                                    <input type="text" id="datas-${periodoIndex}" name="periodos[${periodoIndex}][datas]" class="form-control flatpickr" placeholder="Selecione as datas" required readonly>
+                                    <input type="time" name="periodos[${periodoIndex}][hora_inicio]" class="form-control mt-2" required>
+                                    <input type="time" name="periodos[${periodoIndex}][hora_fim]" class="form-control mt-2" required>
+                                    <button type="button" class="btn btn-danger btn-sm mt-2 remover-periodo">Excluir Período</button>
+                                </div>
+                            `;
 
                 container.insertAdjacentHTML('beforeend', novoPeriodoHTML);
                 flatpickr(`#datas-${periodoIndex}`, {
@@ -296,11 +309,14 @@
                 });
 
                 // Verifica a sobreposição ao adicionar novo período
+                // Ajuste na lógica de verificação de sobreposição
                 if (!verificarSobreposicao(servicoId)) {
                     alert('Há sobreposição de horários. Por favor, ajuste as datas ou horários.');
-                    // Opcional: pode remover o último período adicionado se houver sobreposição
-                    document.getElementById(`periodo-${periodoIndex}`).remove();
+                    // Remover o último período adicionado
+                    const ultimoPeriodo = document.getElementById(`periodo-${periodoIndex}`);
+                    ultimoPeriodo.parentNode.removeChild(ultimoPeriodo);
                 }
+
             }
 
             // Função para remover período

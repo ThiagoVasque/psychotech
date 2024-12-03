@@ -46,7 +46,10 @@ Route::prefix('paciente')->middleware('auth:paciente')->group(function () {
     // Home do Paciente
     Route::get('/', [PacienteController::class, 'home'])->name('paciente.home');
 
+    // Gerenciamento de Perfil (editar perfil)
     Route::get('/perfil', [PacienteController::class, 'gerencia'])->name('paciente.gerencia_perfil');
+    // Rota para atualizar perfil
+    Route::put('/perfil', [PacienteController::class, 'atualizarPerfil'])->name('paciente.perfil.update'); // Adicionada para atualizar o perfil
 
     // Consultas do Paciente
     Route::get('/consultas', [ConsultaController::class, 'index'])->name('paciente.consultas');
@@ -67,9 +70,15 @@ Route::prefix('paciente')->middleware('auth:paciente')->group(function () {
     Route::delete('/diario/{id}', [DiarioController::class, 'destroy'])->name('paciente.deleteDiario');
 });
 
+
 // Rotas para Doutores
 Route::prefix('doutor')->middleware('auth:doutor')->group(function () {
     Route::get('/', [DoutorController::class, 'home'])->name('doutor.home');
+
+    Route::get('/perfil', [DoutorController::class, 'gerencia'])->name('doutor.gerencia_perfil');
+    // Rota para atualizar perfil
+    Route::put('/perfil', [DoutorController::class, 'atualizarPerfil'])->name('doutor.perfil.update'); // Adicionada para atualizar o perfil
+
 
     // Consultas do Doutor
     Route::get('/consultas', [DoutorController::class, 'consultas'])->name('doutor.consultas');

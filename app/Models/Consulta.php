@@ -10,11 +10,11 @@ class Consulta extends Model
     use HasFactory;
 
     protected $fillable = [
-        'paciente_cpf', 
-        'doutor_cpf', 
-        'data_hora', 
-        'status', 
-        'link_doutor', 
+        'paciente_cpf',
+        'doutor_cpf',
+        'data_hora',
+        'status',
+        'link_doutor',
         'link_paciente',
         'anotacao',
     ];
@@ -30,4 +30,18 @@ class Consulta extends Model
     {
         return $this->belongsTo(Doutor::class, 'doutor_cpf', 'cpf');
     }
+
+    // No modelo Consulta
+// No modelo Consulta
+public function doutorServico()
+{
+    return $this->belongsTo(DoutorServico::class, 'doutor_cpf', 'doutor_cpf');
+}
+
+
+
+
+
+
+
 }

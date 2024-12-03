@@ -15,7 +15,7 @@ class ForgotPasswordController extends Controller
      */
     public function showLinkRequestForm()
     {
-        return view('auth.password-forgot'); // Certifique-se de que a view 'auth.password-forgot' exista
+        return view('auth.password-forgot');
     }
 
     /**
@@ -52,7 +52,7 @@ class ForgotPasswordController extends Controller
 
         // Verifica se o link foi enviado com sucesso
         return $response == Password::RESET_LINK_SENT
-            ? back()->with('status', 'Enviamos um link para redefinição de senha para o seu e-mail!')
+            ? back()->with('status', __('passwords.sent')) // Traduzido
             : back()->withErrors(['email' => __($response)]);
     }
 
@@ -100,7 +100,7 @@ class ForgotPasswordController extends Controller
 
         // Retorna o status de redefinição
         return $response == Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('status', 'Senha redefinida com sucesso!')
+            ? redirect()->route('login')->with('status', __('passwords.reset')) // Traduzido
             : back()->withErrors(['email' => __($response)]);
     }
 }

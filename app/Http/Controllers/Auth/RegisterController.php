@@ -60,10 +60,10 @@ class RegisterController extends Controller
                 'string',
                 'min:8',
                 'confirmed',
-                'regex:/[A-Z]/', 
-                'regex:/[a-z]/', 
+                'regex:/[A-Z]/',
+                'regex:/[a-z]/',
                 'regex:/[0-9]/',
-                'regex:/[@$!%*?&]/', 
+                'regex:/[@$!%*?&]/',
             ],
             'crm' => [
                 'nullable',
@@ -71,7 +71,7 @@ class RegisterController extends Controller
                     return $request->role === 'doutor';
                 }),
             ],
-            'foto_perfil' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', 
+            'foto_perfil' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         // Se a validação falhar, retornamos com erros
@@ -110,9 +110,13 @@ class RegisterController extends Controller
         // Verifica se há uma foto de perfil e salva
         if ($request->hasFile('foto_perfil') && $request->file('foto_perfil')->isValid()) {
             $fotoPerfil = $request->file('foto_perfil');
-            $fotoPerfilPath = $fotoPerfil->store('fotos_perfil', 'public'); // Salvando a foto na pasta 'storage/app/public/fotos_perfil'
-            $data['foto_perfil'] = $fotoPerfilPath;
+            // Salvando a foto no diretório 'public/fotos_perfil' e gerando a URL correta
+            $fotoPerfilPath = $fotoPerfil->store('fotos_perfil', 'public');
+
+            // Salva o caminho correto (somente o nome do arquivo) no banco
+            $data['foto_perfil'] = basename($fotoPerfilPath); // Salva apenas o nome do arquivo, sem o diretório completo
         }
+
 
         // Verifica a role do usuário e cria o registro nas tabelas corretas
         try {

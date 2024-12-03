@@ -10,12 +10,54 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     @stack('styles')
+    <style>
+        /* Estilo para transição suave */
+        nav {
+            transition: transform 0.3s ease, visibility 0.3s ease;
+            transform: translateX(0);
+            width: 250px;
+        }
+
+        nav.collapsed {
+            transform: translateX(-100%);
+            width: 50px;
+        }
+
+        .container {
+            transition: margin-left 0.3s ease, width 0.3s ease;
+            margin-left: 200px;
+            /* Largura inicial da sidebar */
+            width: calc(100% - 250px);
+            padding: 2px;
+            text-align: left;
+        }
+
+        nav.collapsed~.container {
+            margin-left: 0;
+            /* Ajusta a largura quando a sidebar estiver recolhida */
+            width: 100%;
+            text-align: left;
+        }
+
+        /* Botão de alternância sempre visível */
+        #toggleSidebar {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+        }
+
+        nav.collapsed #toggleSidebar {
+            left: -0px;
+            transform: translateX(100%);
+        }
+    </style>
 </head>
 
 <body>
     <div class="d-flex" style="min-height: 100vh;">
         <!-- Sidebar -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light flex-column"
+        <nav id="sidebar" class="navbar navbar-expand-lg navbar-light bg-light flex-column"
             style="width: 250px; height: 100%; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);">
 
             <div class="text-center mb-4 mt-3">
@@ -23,7 +65,7 @@
                 @auth
                     <div class="mb-2">
                         <!-- Foto de Perfil -->
-                        <img src="{{ asset('storage/' . auth()->user()->foto_perfil) }}" alt="Foto de Perfil"
+                        <img src="{{ asset('storage/fotos_perfil/' . auth()->user()->foto_perfil) }}" alt="Foto de Perfil"
                             class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
                     </div>
                     <h3>{{ auth()->user()->nome }}</h3>
@@ -31,6 +73,7 @@
                 @else
                     <h3>Usuário não autenticado</h3>
                 @endauth
+                <p class="card-text text-center">{{ auth()->user()->especialidade }}</p>
             </div>
 
             <ul class="navbar-nav flex-column">
@@ -56,14 +99,11 @@
                 </li>
             </ul>
 
-            <!-- Botões de Gerenciamento e Logout abaixo do sidebar -->
             <div class="mt-auto text-center mb-4">
-                <!-- Botão de Configurações (Engrenagem) -->
-                <a href="" class="btn btn-primary btn-sm mb-2 w-100">
+                <a href="{{ route('doutor.gerencia_perfil') }}" class="btn btn-primary btn-sm mb-2 w-100">
                     <i class="fas fa-cogs"></i> Gerenciar Perfil
                 </a>
 
-                <!-- Botão de Logout -->
                 <a href="{{ route('logout') }}"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                     class="btn btn-danger btn-sm w-100">
@@ -76,7 +116,11 @@
         </nav>
 
         <!-- Main Content -->
-        <div class="container" style="margin-left: 250px; padding-top: 20px; padding-bottom: 80px;">
+        <div class="container" style="padding-top: 20px; padding-bottom: 80px;">
+            <button id="toggleSidebar" class="btn btn-primary"
+                style="position: fixed; top: 10px; left: 10px; z-index: 1000;">
+                <i class="fas fa-chevron-left"></i>
+            </button>
             <div class="content">
                 @yield('content')
             </div>
@@ -89,8 +133,25 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     @stack('scripts')
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleButton = document.getElementById('toggleSidebar');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.querySelector('.container');
 
+            toggleButton.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+
+                if (sidebar.classList.contains('collapsed')) {
+                    mainContent.style.marginLeft = '0';
+                    toggleButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                } else {
+                    mainContent.style.marginLeft = '250px';
+                    toggleButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

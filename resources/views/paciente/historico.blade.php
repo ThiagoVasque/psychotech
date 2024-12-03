@@ -7,13 +7,15 @@
     <form action="{{ route('paciente.historico') }}" method="GET" class="mb-4">
         <div class="form-group">
             <label for="nome">Nome do Doutor</label>
-            <input type="text" class="form-control" id="nome" name="nome" value="{{ request('nome') }}" placeholder="Digite o nome do doutor">
+            <input type="text" class="form-control" id="nome" name="nome" value="{{ request('nome') }}"
+                placeholder="Digite o nome do doutor">
         </div>
 
         <div class="form-group d-flex align-items-center">
             <div>
                 <label for="data_inicio">Data Início</label>
-                <input type="date" class="form-control" id="data_inicio" name="data_inicio" value="{{ request('data_inicio') }}">
+                <input type="date" class="form-control" id="data_inicio" name="data_inicio"
+                    value="{{ request('data_inicio') }}">
             </div>
 
             <div class="mx-2 mt-4">
@@ -34,19 +36,26 @@
     <table class="table table-striped table-bordered">
         <thead class="thead-dark">
             <tr>
-                <th>Nome</th>
-                <th>Idade</th>
+                <th>Doutor</th>
+                <th>Serviço</th>
                 <th>Data da Consulta</th>
-                <th>Observações</th>
+                <th>Minhas Observações</th>
+                <th>Valor</th>
             </tr>
         </thead>
         <tbody>
             @forelse ($consultas as $consulta)
                 <tr>
-                    <td>{{ $consulta->paciente->nome }}</td>
-                    <td>{{ \Carbon\Carbon::parse($consulta->paciente->data_nascimento)->age }} anos</td>
+                    <td>
+                        {{ $consulta->doutor->nome ?? 'Doutor não encontrado' }}
+                        - {{ $consulta->doutor->especialidade ?? 'Especialidade não encontrada' }}
+                    </td>
+                    <td>{{ $consulta->doutorServico->titulo ?? 'Serviço não encontrado' }}</td>
                     <td>{{ \Carbon\Carbon::parse($consulta->data_hora)->format('d/m/Y H:i') }}</td>
                     <td>{{ $consulta->anotacao }}</td>
+                    <td>
+                        {{ number_format($consulta->valor, 2, ',', '.') }}
+                    </td>
                 </tr>
             @empty
                 <tr>

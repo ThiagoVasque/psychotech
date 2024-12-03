@@ -13,34 +13,42 @@
                     <tr>
                         <th>Data e Hora</th>
                         <th>Doutor</th>
+                        <th>Serviço</th> <!-- Coluna para o nome do serviço -->
                         <th>Anotações</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($consultas as $consulta)
-                        <tr class="{{ \Carbon\Carbon::parse($consulta->data_hora)->addHours(2)->isPast() ? 'text-muted' : '' }}">
-                            <td>{{ \Carbon\Carbon::parse($consulta->data_hora)->format('d/m/Y H:i') }}</td>
-                            <td>{{ $consulta->doutor->nome ?? 'Doutor não encontrado' }}</td>
-                            <td>{{ $consulta->anotacao ?? 'Nenhuma anotação' }}</td>
-                            <td>
-                                @php
-                                    $agora = \Carbon\Carbon::now();
-                                    $dataConsulta = \Carbon\Carbon::parse($consulta->data_hora);
-                                @endphp
+                                <tr
+                                    class="{{ \Carbon\Carbon::parse($consulta->data_hora)->addHours(2)->isPast() ? 'text-muted' : '' }}">
+                                    <td>{{ \Carbon\Carbon::parse($consulta->data_hora)->format('d/m/Y H:i') }}</td>
+                                    <td>
+                                        {{ $consulta->doutor->nome ?? 'Doutor não encontrado' }}
+                                        - {{ $consulta->doutor->especialidade ?? 'Especialidade não encontrada' }}
+                                    </td>
+                                    <td>{{ $consulta->doutorServico->titulo ?? 'Serviço não encontrado' }}</td>
 
-                                @if($dataConsulta->lte($agora))
-                                    {{-- Verifica se a consulta já está liberada --}}
-                                    <a href="{{ $consulta->link_paciente }}" class="btn btn-primary" target="_blank">
-                                        Iniciar Videochamada
-                                    </a>
-                                @else
-                                    <button class="btn btn-secondary" disabled>
-                                        Aguardando Horário
-                                    </button>
-                                @endif
-                            </td>
-                        </tr>
+
+                                    <!-- Exibe o nome do serviço -->
+                                    <td>{{ $consulta->anotacao ?? 'Nenhuma anotação' }}</td>
+                                    <td>
+                                        @php
+                                            $agora = \Carbon\Carbon::now();
+                                            $dataConsulta = \Carbon\Carbon::parse($consulta->data_hora);
+                                        @endphp
+
+                                        @if($dataConsulta->lte($agora))
+                                            <a href="{{ $consulta->link_paciente }}" class="btn btn-primary" target="_blank">
+                                                Iniciar Videochamada
+                                            </a>
+                                        @else
+                                            <button class="btn btn-secondary" disabled>
+                                                Aguardando Horário
+                                            </button>
+                                        @endif
+                                    </td>
+                                </tr>
                     @endforeach
                 </tbody>
             </table>
